@@ -149,7 +149,7 @@ it('shows truncated AI referral landings as unknown rather than fetch-only', () 
     </LiekanLocaleContext.Provider>,
   );
   expect(
-    screen.getByText('AI 引薦落地頁記錄已截斷，未列出頁面的引薦造訪顯示為未知，不計為 0。'),
+    screen.getByText('AI 引薦到達網頁記錄已截斷，未列出頁面的引薦造訪顯示為未知，不計為 0。'),
   ).toBeInTheDocument();
   const row = screen
     .getAllByText('/faq', { selector: 'td' })

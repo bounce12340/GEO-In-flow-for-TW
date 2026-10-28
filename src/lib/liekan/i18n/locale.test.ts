@@ -127,7 +127,7 @@ it('renders Taiwan Traditional Chinese from the shared message identities', () =
   expect(translateText('重新登录', 'zh-TW')).toBe('重新登入');
   expect(translateText('访问次数', 'zh-CN')).toBe('访问次数');
   expect(translateSystemText('GEO 后台暂不可用，请重新读取', 'zh-TW')).toBe(
-    'GEO 後台暫不可用，請重新讀取',
+    'GEO 後端暫不可用，請重新讀取',
   );
   expect(translateSystemText('visitor-entered 简体 text', 'zh-TW')).toBe('visitor-entered 简体 text');
   expect(countUnit('页', 2, 'zh-TW')).toBe('頁');
