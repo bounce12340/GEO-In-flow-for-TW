@@ -143,15 +143,15 @@ it('initializes once and preserves server values over later browser values', asy
 });
 
 it.each([
-  [{}, 'Asia/Taipei'],
-  [{ timezone: 'invalid/zone', range: 'garbage' }, 'Asia/Taipei'],
-  [{ timezone: 'Asia/Shanghai', range: '24hour' }, 'Asia/Shanghai'],
-  [{ timezone: 'Asia/Taipei', range: '24hour' }, 'Asia/Taipei'],
+  [{}, 'Asia/Taipei', null],
+  [{ timezone: 'invalid/zone', range: 'garbage' }, 'Asia/Taipei', null],
+  [{ timezone: 'Asia/Shanghai', range: '24hour' }, 'Asia/Shanghai', 'CN'],
+  [{ timezone: 'Asia/Taipei', range: '24hour' }, 'Asia/Taipei', null],
 ])(
-  'initializes the Taipei/Today default or a catalog browser zone from %s',
-  async (input, timezone) => {
+  'initializes the Taipei/Today default or a browser zone from %s; only Shanghai implies CN',
+  async (input, timezone, countryCode) => {
     expect(await initializeAccountPreferences(request, input)).toMatchObject({
-      countryCode: 'CN',
+      countryCode,
       timezone,
       range: '0day',
       configured: false,
