@@ -143,7 +143,7 @@ export function CrawlPurposePanel({
             '–'
           ) : (
             <Badge key="exposure" tone={bot.datasetExposure === 'open_dataset' ? 'amber' : 'gray'}>
-              {exposureLabels[bot.datasetExposure]}
+              {i18n.text(exposureLabels[bot.datasetExposure])}
             </Badge>
           ),
           num(bot.requests),

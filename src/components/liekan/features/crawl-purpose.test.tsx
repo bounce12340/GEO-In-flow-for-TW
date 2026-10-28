@@ -12,6 +12,7 @@ const data = {
   bots: [
     { botId: 'gptbot', name: 'GPTBot', ...counts(6) },
     { botId: 'chatgpt-user', name: 'ChatGPT-User', ...counts(3) },
+    { botId: 'ccbot', name: 'CCBot', ...counts(1) },
   ],
   pages: [
     { botId: 'gptbot', name: 'GPTBot', path: '/private/a', humanPath: '/private/a', ...counts(4) },
@@ -74,4 +75,19 @@ it('reuses robots.txt stored by the latest completed public check', () => {
   ]);
   expect(screen.getByText('已使用最近一次公开页面检查读取的 robots.txt。')).toBeInTheDocument();
   expect(screen.getByText('Disallow: /guide')).toBeInTheDocument();
+});
+
+it.each([
+  ['zh-TW', '開放資料集', '營運方模型訓練'],
+  ['en-US', 'Open dataset', 'Operator model training'],
+] as const)('translates dataset exposure badges in %s', (locale, open, operator) => {
+  view(locale);
+  const badgeIn = (name: string, label: string) =>
+    screen
+      .getAllByText(name, { selector: 'td' })
+      .some(cell => within(cell.closest('tr') as HTMLElement).queryByText(label));
+  expect(badgeIn('CCBot', open)).toBe(true);
+  expect(badgeIn('GPTBot', operator)).toBe(true);
+  expect(screen.queryByText('开放数据集')).toBeNull();
+  expect(screen.queryByText('运营方模型训练')).toBeNull();
 });
