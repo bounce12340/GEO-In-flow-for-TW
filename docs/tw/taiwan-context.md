@@ -54,6 +54,14 @@ IP 位址、Cookie、裝置識別碼、工作階段錄製內容在可直接或�
 - LINE（LY Corporation）以 Linespider 為 LINE 服務內搜尋收集網頁，官方未提及 AI 訓練。
 - 台灣各搜尋引擎或 AI 助理的市占率：本次沒有取得可引用的官方資料，因此產品與文件不提供數字。若需要，可參考 StatCounter 等第三方量測並註明來源。
 
-## 五、地理資料的現況（待決議）
+## 五、地理資料：台灣使用獨立國家代碼 TW
 
-原專案把 Taiwan（`TW` / `TWN`）在國家統計中併入 `CN`，省級顯示為「台灣」（見 `src/lib/country.ts`、`docs/geography.md`），帳戶國家選單也把台灣時區放在 `CN` 之下。GEOInflow TW 本次**未修改**這個行為，因為它牽涉 PostgreSQL / ClickHouse 查詢、匯入與既有資料。是否改為台灣獨立國家代碼，請見交付報告中的待決議事項。
+GEOInflow TW 在國家統計中把台灣列為獨立國家代碼 `TW`，縣市使用 ISO 3166-2:TW 代碼（例如 `TW-TPE`、`TW-KHH`）。規則集中在 `src/lib/country.ts`，詳見 `docs/geography.md`。
+
+- `TW`、`TWN` 一律歸為 `TW`。舊資料中國家為 `CN` 或空白、地區為 `CN-71`、`CN-TW` 或 `CN-TPE` 等台灣縣市代碼的紀錄，查詢時同樣歸為 `TW`。原始資料與資料庫結構不變，沒有新增 migration。
+- 只標示台灣、沒有縣市資訊的紀錄沒有地區，和其他國家缺少地區時相同；系統不推測縣市。台灣縣市目前沒有中文名稱，畫面顯示原代碼。
+- 國家篩選 `CN` 不再包含台灣；`TW` 包含 `TW`、`TWN` 與舊的中國-台灣紀錄。舊連結的地區條件 `CN-TPE`、`TWN-KHH` 對應到 `TW-*` 縣市，`CN-71` 對應全部台灣紀錄。
+- 中國省份清單與省份覆蓋率不再包含台灣。地圖上的台灣恢復為 `TWN`。
+- 帳戶國家選單新增「台灣」（時區 `Asia/Taipei`）；瀏覽器時區為 `Asia/Taipei` 時預設國家為 `TW`，`Asia/Shanghai` 為 `CN`。
+- 地域規則版本更新為 `rules-6`，報告快取會重新產生。
+- 需要資料庫的驗證（`scripts/liekan-data-regression.mjs`、`scripts/liekan-geography-regression.ts`、ClickHouse 迴歸）尚未在真實資料庫執行。
