@@ -108,3 +108,16 @@ it.each([
   ]);
   expect(screen.getByText(message)).toBeInTheDocument();
 });
+
+it('flags malformed robots lines instead of only reporting no disallowed hits', () => {
+  view('zh-TW');
+  fireEvent.change(screen.getByLabelText('robots.txt 內容'), {
+    target: { value: 'User-agent: GPTBot\nDisallow: private' },
+  });
+  expect(screen.getByText('未發現命中禁止路徑的請求')).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      'robots.txt 有 1 行格式無效（例如路徑未以 / 開頭），這些行未納入比對；未發現命中不代表已全部遵循。',
+    ),
+  ).toBeInTheDocument();
+});

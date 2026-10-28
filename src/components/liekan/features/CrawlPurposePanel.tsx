@@ -227,6 +227,14 @@ export function CrawlPurposePanel({
               num(result.robots.skippedPages),
             ])}
           </p>
+          {result.robots.issues > 0 && (
+            <Notice tone="amber">
+              {i18n.text(
+                'robots.txt 有 {v0} 行格式无效（例如路径未以 / 开头），这些行未纳入比对；未发现命中不代表已全部遵循。',
+                [num(result.robots.issues)],
+              )}
+            </Notice>
+          )}
           <Table
             columns={['蜘蛛', '路径', '请求数', '匹配规则', '类型']}
             numeric={[2]}

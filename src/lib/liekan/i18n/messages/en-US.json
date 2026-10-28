@@ -4950,5 +4950,6 @@
   "m_20b3844c07ec": "User-triggered fetches",
   "m_253aaff19a39": "Relation",
   "m_40f1f5d14a7e": "Cannot determine: robots.txt exceeds the 512 KiB parser limit.",
-  "m_5da802dce308": "Cannot determine: the robots.txt content could not be parsed."
+  "m_5da802dce308": "Cannot determine: the robots.txt content could not be parsed.",
+  "m_4fdb3427050b": "Malformed robots.txt lines: {v0} (for example, a path that does not start with /). They were not compared, so no hits does not mean every rule was followed."
 }
