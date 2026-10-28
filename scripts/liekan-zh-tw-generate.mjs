@@ -66,6 +66,12 @@ const taiwanGlossary = [
   [/文檔/g, '文件'],
   [/緩存/g, '快取'],
   [/字符/g, '字元'],
+  // OpenCC twp phrase forms that read as mainland or wrong-sense wording in Taiwan product UI.
+  [/引數/g, '參數'],
+  [/釋出/g, '發布'],
+  [/稽覈/g, '審核'],
+  [/自定義/g, '自訂'],
+  [/響應(?!式)/g, '回應'],
 ];
 
 const placeholder = index => `\uE000${index}\uE001`;
