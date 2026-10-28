@@ -87,6 +87,27 @@ function toTaiwan(source) {
 
 const overrides = JSON.parse(readFileSync('config/liekan/zh-TW-overrides.json', 'utf8'));
 
+/**
+ * Structure a reviewed override must share with the machine conversion of its source: ICU
+ * placeholders (in order), HTML tags, backtick spans, Latin/number runs (brands, code, units) and
+ * protected names. Wording may change; these may not.
+ */
+function overrideShape(text) {
+  return JSON.stringify([
+    text.match(/\{[^{}]+\}/g) || [],
+    (text.match(/<\/?[A-Za-z][^>]*>/g) || []).sort(),
+    (text.match(/`[^`]*`/g) || []).sort(),
+    (text.match(/[A-Za-z0-9]+/g) || []).sort(),
+    preservedTerms.map(term => text.split(term).length - 1),
+  ]);
+}
+
+function assertOverride(key, source, value) {
+  if (typeof value !== 'string' || !value.trim()) throw new Error(`Empty zh-TW override: ${key}`);
+  if (overrideShape(value) !== overrideShape(toTaiwan(source)))
+    throw new Error(`zh-TW override changes placeholders, markup or literals: ${key}`);
+}
+
 function generateCatalog(chinese) {
   return Object.fromEntries(
     Object.entries(chinese).map(([key, source]) => [key, overrides[key] ?? toTaiwan(source)]),
@@ -144,8 +165,17 @@ if (check) {
     console.error(`Stale Traditional Chinese geography names: ${geographyTarget}`);
   }
 } else writeFileSync(geographyTarget, geographyOutput);
-for (const key of Object.keys(overrides))
+const sourceByKey = {};
+for (const directory of roots)
+  Object.assign(
+    sourceByKey,
+    JSON.parse(readFileSync(`src/lib/liekan/i18n/${directory}/zh-CN.json`, 'utf8')),
+  );
+for (const [key, value] of Object.entries(overrides)) {
   if (!/^m_[0-9a-f]{12}$/.test(key)) throw new Error(`Invalid zh-TW override key: ${key}`);
+  if (!(key in sourceByKey)) throw new Error(`zh-TW override has no source message: ${key}`);
+  assertOverride(key, sourceByKey[key], value);
+}
 if (stale) {
   console.error('Run `pnpm liekan:zh-tw` and review the diff.');
   process.exit(1);
