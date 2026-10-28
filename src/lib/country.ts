@@ -130,7 +130,9 @@ export function getRegionFilterValues(value: any) {
     const [country] = item.split('-');
     if (formerTaiwanProvinceNames.includes(item) || isTaiwanGeography(country, item)) {
       const region = taiwanRegionCode(item);
-      (region ? [region] : wholeTaiwanFilterValues).forEach(code => result.add(code));
+      (region ? [region] : wholeTaiwanFilterValues).forEach(code => {
+        result.add(code);
+      });
       return;
     }
     const named = geographyCatalog.provinces.find(p => p.name === item);
