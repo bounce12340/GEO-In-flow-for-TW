@@ -134,6 +134,7 @@ export function regionAliases(code?: string | null, country?: string | null) {
 export function cityValueOptions(
   rows: (Geography & { value: string; count: number })[],
   chinese = true,
+  locale: Exclude<LiekanLocale, 'en-US'> = 'zh-CN',
 ) {
   const grouped = new Map<string, { value: string; count: number; labels: Set<string> }>();
   for (const row of rows) {
@@ -143,12 +144,12 @@ export function cityValueOptions(
       labels: new Set<string>(),
     };
     group.count += Number(row.count || 0);
-    group.labels.add(chinese ? geographyLabel({ ...row, city: row.value }) : row.value);
+    group.labels.add(chinese ? geographyLabel({ ...row, city: row.value }, locale) : row.value);
     // A raw city equality condition also selects its explicit homonyms across provinces.
     if (chinese) {
       for (const entry of cityDefinitions) {
         if (entry.aliases.some(alias => geographyAlias(alias) === geographyAlias(row.value || '')))
-          group.labels.add(entry.name);
+          group.labels.add(localizeChinese(entry.name, locale));
       }
     }
     grouped.set(row.value, group);

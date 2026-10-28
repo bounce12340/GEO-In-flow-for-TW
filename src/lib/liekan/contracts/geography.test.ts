@@ -177,6 +177,16 @@ test('keeps same-spelling options explicit and accepts traditional city aliases'
     { value: 'Suzhou', country: 'CN', region: 'CN-AH', count: 1 },
   ]);
   expect(options).toEqual([{ value: 'Suzhou', count: 4, label: '苏州 / 宿州' }]);
+  expect(
+    cityValueOptions(
+      [
+        { value: 'Suzhou', country: 'CN', region: 'CN-JS', count: 3 },
+        { value: 'Suzhou', country: 'CN', region: 'CN-AH', count: 1 },
+      ],
+      true,
+      'zh-TW',
+    ),
+  ).toEqual([{ value: 'Suzhou', count: 4, label: '蘇州 / 宿州' }]);
   expect(cityValueOptions([{ value: 'Jinan', count: 2 }], false)[0].label).toBe('Jinan');
   expect(geographyLabel({ country: 'CN', region: 'CN-JS', city: 'Taizhou' })).toBe('泰州');
   expect(geographyLabel({ country: 'CN', region: 'CN-ZJ', city: 'Taizhou' })).toBe('台州');
