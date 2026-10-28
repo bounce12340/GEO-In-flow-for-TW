@@ -199,6 +199,9 @@ export function CrawlPurposePanel({
       <p className="muted">
         {i18n.text('粘贴网站当前的 robots.txt 内容，在浏览器内对照已记录的抓取路径，不会保存。')}
       </p>
+      <p className="muted">
+        {i18n.text('记录的抓取路径不含查询字符串，因此以 $ 结尾或包含查询参数的规则只能近似比对。')}
+      </p>
       <label className="field">
         <span>{i18n.text('robots.txt 内容')}</span>
         <textarea

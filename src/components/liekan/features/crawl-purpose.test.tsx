@@ -55,6 +55,9 @@ it('explains crawl purposes in Taiwan Traditional Chinese and keeps unknown robo
   expect(screen.getAllByText('使用者即時觸發取得').length).toBeGreaterThan(0);
   expect(screen.getByText('尚未提供 robots.txt，無法判斷是否抓取禁止路徑。')).toBeInTheDocument();
   expect(screen.getByText('兩者皆有')).toBeInTheDocument();
+  expect(
+    screen.getByText('記錄的抓取路徑不含查詢字串，因此以 $ 結尾或包含查詢參數的規則只能近似比對。'),
+  ).toBeInTheDocument();
 });
 
 it('checks recorded paths against pasted robots rules without saving them', () => {
