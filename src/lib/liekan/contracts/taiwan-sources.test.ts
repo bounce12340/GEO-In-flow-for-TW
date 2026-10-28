@@ -36,4 +36,9 @@ it('reads Taiwan content signals from hosts and language tags', () => {
   expect(chineseScriptForLanguageTag('zh-CN')).toBe('simplified');
   expect(chineseScriptForLanguageTag('zh')).toBe('unspecified');
   expect(chineseScriptForLanguageTag('en')).toBe('not_chinese');
+  expect(chineseScriptForLanguageTag('zh_TW')).toBe('traditional');
+  expect(chineseScriptForLanguageTag('zh_Hans_CN')).toBe('simplified');
+  expect(chineseScriptForLanguageTag('ZH')).toBe('unspecified');
+  expect(chineseScriptForLanguageTag('zha')).toBe('not_chinese');
+  expect(chineseScriptForLanguageTag(null)).toBe('not_chinese');
 });

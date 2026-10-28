@@ -114,8 +114,9 @@ export function taiwanSourceForHost(host: string | null | undefined) {
 export const isTaiwanDomain = (host: string) =>
   /(^|\.)[^.]+\.tw$/i.test(host.trim().replace(/\.$/, ''));
 export function chineseScriptForLanguageTag(tag: string | null | undefined) {
-  const value = tag?.trim().toLowerCase();
-  if (!value?.startsWith('zh')) return 'not_chinese' as const;
+  // `zh_TW` is a common POSIX spelling; `zha` (Zhuang) and other zh-prefixed codes are not Chinese.
+  const value = tag?.trim().toLowerCase().replaceAll('_', '-');
+  if (value !== 'zh' && !value?.startsWith('zh-')) return 'not_chinese' as const;
   if (/^zh-(hant|tw|hk|mo)(-|$)/.test(value)) return 'traditional' as const;
   if (/^zh-(hans|cn|sg|my)(-|$)/.test(value)) return 'simplified' as const;
   return 'unspecified' as const;
