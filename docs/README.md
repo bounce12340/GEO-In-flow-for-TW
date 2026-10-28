@@ -4,6 +4,8 @@ GEOInflow 将浏览器访客、AI 爬虫日志、搜索引荐和内容目录关�
 
 快速开始和部署指南同时提供英文版：[Quick start](getting-started.en.md) · [Deployment](deployment.en.md)。
 
+GEOInflow TW（台灣在地化）文件：[快速開始](tw/quick-start.md) · [部署](tw/deployment.md) · [AI 爬蟲目錄](tw/crawlers.md) · [抓取目的](tw/crawl-purpose.md) · [開放資料集曝光](tw/open-dataset-exposure.md) · [台灣情境](tw/taiwan-context.md) · [未驗證項目](tw/UNVERIFIED.md)。
+
 ## 从这里开始
 
 | 你的目标 | 阅读顺序 |

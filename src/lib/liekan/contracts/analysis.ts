@@ -75,7 +75,7 @@ export const analysisQuery = z
     refresh: z.literal('1').optional(),
     startAt: z.coerce.number().int().min(0),
     endAt: z.coerce.number().int().min(0),
-    timezone: z.string().max(80).default('Asia/Shanghai'),
+    timezone: z.string().max(80).default('Asia/Taipei'),
     unit: z.enum(['minute', 'hour', 'day', 'week', 'month', 'year']).default('day'),
     kind: z
       .enum([
@@ -126,7 +126,7 @@ export const journeyQuery = z
     refresh: z.literal('1').optional(),
     startAt: z.coerce.number().int().min(0),
     endAt: z.coerce.number().int().min(0),
-    timezone: z.string().max(80).default('Asia/Shanghai'),
+    timezone: z.string().max(80).default('Asia/Taipei'),
     steps: z.coerce.number().int().min(2).max(7).default(3),
     type: z.enum(['all', 'pages', 'events']).default('all'),
     startStep: z.string().max(200).default(''),
@@ -164,7 +164,9 @@ export function duration(seconds: number | null | undefined, locale: LiekanLocal
   if (s >= 86400) {
     const days = Math.floor(s / 86400),
       hours = Math.floor((s % 86400) / 3600);
-    return locale === 'en-US' ? `${days}d ${hours}h` : `${days} 天 ${hours} 小时`;
+    return locale === 'en-US'
+      ? `${days}d ${hours}h`
+      : `${days} 天 ${hours} ${locale === 'zh-TW' ? '小時' : '小时'}`;
   }
   const hh = Math.floor(s / 3600);
   const ss = String(s % 60).padStart(2, '0');

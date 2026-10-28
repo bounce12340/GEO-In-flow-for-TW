@@ -234,6 +234,17 @@
       "removalCondition": "Remove when project documentation uses a replacement locale structure with equivalent content and navigation"
     },
     {
+      "path": "README.zh-TW.md",
+      "purpose": "GEOInflow TW Traditional Chinese (Taiwan) product introduction",
+      "tests": [
+        "Review bilingual README links, commands, license notices and video rendering",
+        "node scripts/liekan-static-check.mjs"
+      ],
+      "owner": "Liekan release maintenance",
+      "constraint": "Preserve upstream behavior and protocols outside this recorded purpose: GEOInflow TW Traditional Chinese (Taiwan) product introduction",
+      "removalCondition": "Remove when project documentation uses a replacement locale structure with equivalent content and navigation"
+    },
+    {
       "path": "THIRD_PARTY_NOTICES.md",
       "purpose": "Retain licenses for durable queue, PostgreSQL client and bundled collector runtime Retain licenses for durable queue, PostgreSQL client and bundled collector runtime; Liekan branding, contributor attribution and third-party license documentation",
       "tests": [

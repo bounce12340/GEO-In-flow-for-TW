@@ -16,7 +16,12 @@ import { setLocale, setTimezone, setUser, useApp } from '@/store/app';
 import type { ExportFrame, ExportRequest } from '../contracts/exports';
 import { isReportOwnedBy } from '../contracts/query';
 import type { WebsiteSummary } from '../contracts/website-summary';
-import { defaultLiekanLocale, isLiekanLocale, readLocaleCookie } from '../i18n/locale';
+import {
+  defaultLiekanLocale,
+  isLiekanLocale,
+  readLocaleCookie,
+  storageLiekanLocale,
+} from '../i18n/locale';
 import { aggregateRequestResources, isAggregateRequest } from './cache-policy';
 import { clientCatalogVersion } from './catalog-client';
 import {
@@ -355,7 +360,7 @@ export function getFeaturePreferences() {
   const storedLocale = getItem(LOCALE_CONFIG);
   return {
     range: account?.range || getItem(DATE_RANGE_CONFIG) || '0day',
-    timezone: account?.timezone || getItem(TIMEZONE_CONFIG) || 'Asia/Shanghai',
+    timezone: account?.timezone || getItem(TIMEZONE_CONFIG) || 'Asia/Taipei',
     countryCode: account?.countryCode ?? null,
     language: defaultLiekanLocale(
       cookieLocale || (isLiekanLocale(storedLocale) ? storedLocale : undefined),
@@ -498,7 +503,7 @@ export function saveFeaturePreferences(value: {
   theme: string;
 }) {
   if ((value.language !== undefined && !isLiekanLocale(value.language)) || value.theme !== 'light')
-    throw new FeatureApiError('当前界面支持简体中文、English 和浅色主题', 400);
+    throw new FeatureApiError('当前界面支持繁体中文、简体中文、English 和浅色主题', 400);
   try {
     new Intl.DateTimeFormat('zh-CN', { timeZone: value.timezone }).format();
   } catch {
@@ -537,7 +542,10 @@ export async function downloadTrafficEvidence(
       authorization: `Bearer ${getClientAuthToken() || ''}`,
       ...(catalogVersion ? { 'X-Liekan-Catalog-Version': catalogVersion } : {}),
     },
-    body: JSON.stringify(body),
+    // Evidence exports store the two original locales; Traditional Chinese uses the Chinese file.
+    body: JSON.stringify(
+      isLiekanLocale(body.locale) ? { ...body, locale: storageLiekanLocale(body.locale) } : body,
+    ),
   });
   if (!response.ok) {
     const data = await response.json().catch(() => null);

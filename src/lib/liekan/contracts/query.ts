@@ -76,7 +76,7 @@ export const reportQuery = z.object({
   ]),
   startAt: z.coerce.number().int().min(0),
   endAt: z.coerce.number().int().min(0),
-  timezone: z.string().max(80).default('Asia/Shanghai'),
+  timezone: z.string().max(80).default('Asia/Taipei'),
   page: z.coerce.number().int().min(1).max(100000).default(1),
   cursor: z.string().max(512).default(''),
   seek: z.enum(['after', 'before']).default('after'),

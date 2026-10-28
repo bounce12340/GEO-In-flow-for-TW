@@ -87,10 +87,14 @@ export async function asyncAnalysisResponse(request: Request, websiteId: string,
   const actor = await authenticateCrawlerMaintenance(request);
   const access = await authorize(request, websiteId);
   const query = Object.fromEntries(new URL(request.url).searchParams);
-  const { readLocaleCookie } = await import('../i18n/locale');
-  const locale =
-    readLocaleCookie(request.headers.get('cookie') || '') ||
-    (request.headers.get('accept-language')?.startsWith('en') ? 'en-US' : 'zh-CN');
+  const { readLocaleCookie, storageLiekanLocale } = await import('../i18n/locale');
+  // Snapshots persist the two original locales; Traditional Chinese renders from the Chinese one.
+  const cookieLocale = readLocaleCookie(request.headers.get('cookie') || '');
+  const locale = cookieLocale
+    ? storageLiekanLocale(cookieLocale)
+    : request.headers.get('accept-language')?.startsWith('en')
+      ? 'en-US'
+      : 'zh-CN';
   const value = await requestDashboardSnapshot(access.website.id, actor, target, query, locale);
   const dispatchId = value.ready === false ? value.analysisJob.id : dashboardRefreshJobId(value);
   if (dispatchId) await earlyHandoff(dispatchId);

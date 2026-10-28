@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { readLocaleCookie, resolveLiekanLocale } from './locale';
+import { readLocaleCookie, resolveLiekanLocale, storageLiekanLocale } from './locale';
 import {
   translateText,
   translateSystemText,
@@ -19,9 +19,14 @@ it('uses saved preference before a valid hint and deployment default', () => {
   expect(resolveLiekanLocale({ cookie: 'en-US', stored: 'zh-CN', hint: 'zh-CN' })).toBe('en-US');
   expect(resolveLiekanLocale({ stored: 'en-US', hint: 'zh-CN' })).toBe('en-US');
   expect(resolveLiekanLocale({ hint: 'en-US' })).toBe('en-US');
-  for (const invalid of ['fr', 'EN-US', '../en-US', 'en-US; Path=/', '', null])
-    expect(resolveLiekanLocale({ cookie: invalid, stored: invalid, hint: invalid })).toBe('zh-CN');
+  for (const invalid of ['fr', 'EN-US', '../en-US', 'en-US; Path=/', 'zh-HK', '', null])
+    expect(resolveLiekanLocale({ cookie: invalid, stored: invalid, hint: invalid })).toBe('zh-TW');
   expect(resolveLiekanLocale({ configured: 'en-US' })).toBe('en-US');
+  expect(resolveLiekanLocale({ configured: 'zh-CN' })).toBe('zh-CN');
+  expect(resolveLiekanLocale({ configured: 'zh-TW' })).toBe('zh-TW');
+  expect(resolveLiekanLocale({ cookie: 'zh-CN', configured: 'zh-TW' })).toBe('zh-CN');
+  expect(resolveLiekanLocale({ stored: 'zh-TW', configured: 'zh-CN' })).toBe('zh-TW');
+  expect(readLocaleCookie('liekan.locale=zh-TW')).toBe('zh-TW');
   expect(readLocaleCookie('session=x; liekan.locale=en-US; extra=x')).toBe('en-US');
   expect(readLocaleCookie('liekan.locale=%E0%A4%A')).toBeUndefined();
   expect(readLocaleCookie('other.liekan.locale=en-US')).toBeUndefined();
@@ -115,4 +120,17 @@ it('localizes the canonical current-user AI space and preserves names across oth
     '原始用户名',
   );
   expect(aiSpaceDisplayName(own, undefined, display)).toBe('个人空间');
+});
+
+it('renders Taiwan Traditional Chinese from the shared message identities', () => {
+  expect(translateText('网站设置', 'zh-TW')).not.toMatch(/[网设]/);
+  expect(translateText('重新登录', 'zh-TW')).toBe('重新登入');
+  expect(translateText('访问次数', 'zh-CN')).toBe('访问次数');
+  expect(translateSystemText('GEO 后台暂不可用，请重新读取', 'zh-TW')).toBe(
+    'GEO 後台暫不可用，請重新讀取',
+  );
+  expect(translateSystemText('visitor-entered 简体 text', 'zh-TW')).toBe('visitor-entered 简体 text');
+  expect(countUnit('页', 2, 'zh-TW')).toBe('頁');
+  expect(storageLiekanLocale('zh-TW')).toBe('zh-CN');
+  expect(storageLiekanLocale('en-US')).toBe('en-US');
 });

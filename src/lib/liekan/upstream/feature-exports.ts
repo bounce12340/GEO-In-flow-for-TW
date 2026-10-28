@@ -4,6 +4,7 @@ import { getPublishedCatalog } from '../crawlers/published';
 import { TRAFFIC_POLICY_VERSION } from './traffic-query';
 import { liekanProduct } from '@/lib/liekan/contracts/product';
 import { getPostgresCountrySQL } from '@/lib/country';
+import { translateSystemText } from '../i18n/text';
 import { createHash, randomBytes } from 'node:crypto';
 import JSZip from 'jszip';
 import Papa from 'papaparse';
@@ -80,7 +81,9 @@ const englishExportLabels: Record<string, string> = {
 const exportLabel = (source: string, locale?: LiekanLocale) =>
   locale === 'en-US' && Object.hasOwn(englishExportLabels, source)
     ? englishExportLabels[source]
-    : source;
+    : locale === 'zh-TW'
+      ? translateSystemText(source, locale)
+      : source;
 const englishFieldLabels: Record<string, string> = {
   pageviews: 'Pageviews',
   visitors: 'Visitors',
@@ -370,7 +373,9 @@ async function prepareSnapshot(
     privacy:
       p.locale === 'en-US' && p.format !== 'json'
         ? 'Session identifiers are anonymized within this file. Raw IP addresses, account credentials, keys and backup codes are excluded.'
-        : '会话标识在本文件内脱敏；不包含原始 IP、账户凭据、密钥或备份代码',
+        : p.locale === 'zh-TW' && p.format !== 'json'
+          ? '工作階段識別碼在本檔案內去識別化；不包含原始 IP、帳戶憑證、金鑰或備份代碼'
+          : '会话标识在本文件内脱敏；不包含原始 IP、账户凭据、密钥或备份代码',
     files: files.map(({ name, rows, fields }) => ({
       name,
       rows,

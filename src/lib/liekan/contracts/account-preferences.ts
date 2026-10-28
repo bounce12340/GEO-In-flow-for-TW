@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import catalog from './country-timezones.json' with { type: 'json' };
 
-export const ACCOUNT_DEFAULT_TIMEZONE = 'Asia/Shanghai';
+export const ACCOUNT_DEFAULT_TIMEZONE = 'Asia/Taipei';
 export const ACCOUNT_DEFAULT_RANGE = '0day';
 export const accountCountryCodes: string[] = Object.keys(catalog.countries);
 export const accountTimezoneCatalogVersion = catalog.version;

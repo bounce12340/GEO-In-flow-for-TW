@@ -8,6 +8,7 @@ import type {
   HistoryRepairRun,
 } from '@/lib/liekan/contracts/history-repair';
 import { useLiekanI18n } from '@/lib/liekan/i18n/client';
+import { storageLiekanLocale } from '@/lib/liekan/i18n/locale';
 import { useManualQuery, useManualRefresh } from '@/lib/liekan/contracts/manual-refresh';
 import { downloadHistoryRepair } from '@/lib/liekan/upstream/history-repair-client';
 import { useFeature } from './context';
@@ -524,7 +525,7 @@ export function HistoryRepairPage() {
                             {
                               actionId: crypto.randomUUID(),
                               timezone: c.range.timezone,
-                              locale: i18n.locale,
+                              locale: storageLiekanLocale(i18n.locale),
                             },
                             id,
                           );
@@ -710,7 +711,7 @@ export function HistoryRepairPage() {
                           post('/scan', {
                             actionId: crypto.randomUUID(),
                             timezone: c.range.timezone,
-                            locale: i18n.locale,
+                            locale: storageLiekanLocale(i18n.locale),
                           }),
                         )
                       }

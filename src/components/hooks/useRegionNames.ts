@@ -1,5 +1,5 @@
 import { normalizeCountryCode, normalizeRegionCode } from '@/lib/country';
-import { provinceDefinitions } from '@/lib/liekan/contracts/geography';
+import { provinceDefinitions, traditionalGeographyName } from '@/lib/liekan/contracts/geography';
 import regions from '../../../public/iso-3166-2.json';
 import { useCountryNames } from './useCountryNames';
 
@@ -8,7 +8,11 @@ export function useRegionNames(locale: string) {
   const regionNames = { ...regions };
   for (const province of provinceDefinitions) {
     const name =
-      locale === 'zh-CN' ? province.name : regions[province.alias] || regions[province.code];
+      locale === 'zh-CN'
+        ? province.name
+        : locale === 'zh-TW'
+          ? traditionalGeographyName(province.name)
+          : regions[province.alias] || regions[province.code];
     if (name) {
       regionNames[province.code] = name;
       regionNames[province.alias] = name;

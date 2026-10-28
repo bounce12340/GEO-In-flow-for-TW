@@ -61,7 +61,7 @@ function MessagesProvider({ children, initialLocale, storedLocale }) {
 
 export function Providers({
   children,
-  initialLocale = 'zh-CN',
+  initialLocale = 'zh-TW',
   storedLocale = false,
 }: {
   children: React.ReactNode;

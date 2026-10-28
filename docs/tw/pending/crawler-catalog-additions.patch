@@ -1,0 +1,533 @@
+diff --git a/config/liekan/ai-platform-coverage.json b/config/liekan/ai-platform-coverage.json
+index 49364b7..24b1823 100644
+--- a/config/liekan/ai-platform-coverage.json
++++ b/config/liekan/ai-platform-coverage.json
+@@ -553,6 +553,16 @@
+         "https://www.kimi.ai/policies/kimi-crawlers",
+         "https://www.kimi.com/code/en"
+       ]
++    },
++    {
++      "id": "poe",
++      "name": "Poe",
++      "operator": "Quora",
++      "website": "https://poe.com",
++      "region": "global",
++      "documentationUrls": [
++        "https://poe.com"
++      ]
+     }
+   ],
+   "products": [
+@@ -3310,6 +3320,97 @@
+       "documentationUrls": [
+         "https://perplexity.ai"
+       ]
++    },
++    {
++      "id": "grok-com",
++      "platformId": "xai",
++      "productId": null,
++      "host": "grok.com",
++      "includeSubdomains": true,
++      "aliases": [
++        "grok"
++      ],
++      "kind": "ai",
++      "enabled": true,
++      "documentationUrls": [
++        "https://grok.com"
++      ]
++    },
++    {
++      "id": "chat-mistral-ai",
++      "platformId": "mistral",
++      "productId": null,
++      "host": "chat.mistral.ai",
++      "includeSubdomains": true,
++      "aliases": [
++        "le chat",
++        "mistral vibe"
++      ],
++      "kind": "ai",
++      "enabled": true,
++      "documentationUrls": [
++        "https://help.mistral.ai"
++      ]
++    },
++    {
++      "id": "meta-ai",
++      "platformId": "meta",
++      "productId": null,
++      "host": "meta.ai",
++      "includeSubdomains": true,
++      "aliases": [
++        "meta.ai"
++      ],
++      "kind": "ai",
++      "enabled": true,
++      "documentationUrls": [
++        "https://www.meta.ai"
++      ]
++    },
++    {
++      "id": "wenxin-baidu-com",
++      "platformId": "baidu",
++      "productId": null,
++      "host": "wenxin.baidu.com",
++      "includeSubdomains": true,
++      "aliases": [
++        "wenxin"
++      ],
++      "kind": "ai",
++      "enabled": true,
++      "documentationUrls": [
++        "https://wenxin.baidu.com"
++      ]
++    },
++    {
++      "id": "you-com",
++      "platformId": "you",
++      "productId": null,
++      "host": "you.com",
++      "includeSubdomains": true,
++      "aliases": [
++        "you.com"
++      ],
++      "kind": "ai",
++      "enabled": true,
++      "documentationUrls": [
++        "https://you.com"
++      ]
++    },
++    {
++      "id": "poe-com",
++      "platformId": "poe",
++      "productId": null,
++      "host": "poe.com",
++      "includeSubdomains": true,
++      "aliases": [
++        "poe"
++      ],
++      "kind": "ai",
++      "enabled": true,
++      "documentationUrls": [
++        "https://poe.com"
++      ]
+     }
+   ]
+ }
+diff --git a/src/lib/liekan/crawlers/catalog-metadata.ts b/src/lib/liekan/crawlers/catalog-metadata.ts
+index 6a80ff5..d377d28 100644
+--- a/src/lib/liekan/crawlers/catalog-metadata.ts
++++ b/src/lib/liekan/crawlers/catalog-metadata.ts
+@@ -54,6 +54,9 @@ const officialExamples: Record<string, string> = {
+   Applebot:
+     'Mozilla/5.0 (Device; OS_version) AppleWebKit/WebKit_version (KHTML, like Gecko)Version/Safari_version [Mobile/Mobile_version] Safari/WebKit_version (Applebot/Applebot_version; +http://www.apple.com/go/applebot)',
+   DuckAssistBot: 'DuckAssistBot/1.2; (+http://duckduckgo.com/duckassistbot.html)',
++  Linespider: 'Mozilla/5.0 (compatible; Linespider/1.1; +https://lin.ee/4dwXkTH)',
++  Slurp: 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)',
++  Cotoyogi: 'Mozilla/5.0 (compatible; Cotoyogi/4.0; +https://ds.rois.ac.jp/center8/crawler/)',
+ };
+ const source = (label: string, url: string): HelpSource => ({ label, url });
+ const trainingAdvice =
+@@ -812,6 +815,193 @@ export const crawlerMetadata: Crawler[] = [
+     },
+     [['MJ12bot', ['SEO 工具'], 'Majestic 链接索引的分布式 crawler。']],
+   ),
++  // GEOInflow TW additions; every entry cites the operator page reviewed on 2026-10-28.
++  ...vendor(
++    {
++      name: 'Google',
++      sources: [
++        source(
++          'Google：User-triggered fetchers',
++          'https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers',
++        ),
++      ],
++      verification: '官方说明提供用户触发获取器的 IP 范围文件；按请求时间核对 UA 与范围。',
++      robots: '用户触发获取器通常不适用 robots.txt；需要强制控制时使用源站或 WAF 规则。',
++      advice: userAdvice,
++    },
++    [
++      [
++        'Google-Agent',
++        ['用户触发'],
++        '代表用户在 Google 基础设施上浏览网页并执行操作的 Agent。',
++        { reviewedAt: '2026-10-28', robotsToken: undefined },
++      ],
++      [
++        'Google-GeminiNotebook',
++        ['用户触发'],
++        '获取用户添加为 Gemini Notebook 资料来源的网址。',
++        { reviewedAt: '2026-10-28', robotsToken: undefined },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'Meta',
++      sources: [
++        source(
++          'Meta：Web crawlers',
++          'https://developers.facebook.com/docs/sharing/webmasters/web-crawlers/',
++        ),
++      ],
++      verification: noFeed,
++      robots: '按 Meta 官方页面分别设置索引与广告 token。',
++    },
++    [
++      [
++        'Meta-WebIndexer',
++        ['AI 搜索'],
++        '改善 Meta AI 搜索结果；允许访问有助于 Meta AI 引用并链接网站。',
++        { reviewedAt: '2026-10-28' },
++      ],
++      [
++        'Meta-ExternalAds',
++        ['广告'],
++        '为广告与其他商业产品抓取网页。',
++        { reviewedAt: '2026-10-28' },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'Diffbot',
++      sources: [
++        source('Diffbot：robots.txt FAQ', 'https://www.diffbot.com/docs/crawl/faq/robots-txt'),
++      ],
++      verification: noFeed,
++      robots: 'Diffbot 与 Diffbot-User 分别使用各自的 robots token。',
++    },
++    [
++      [
++        'Diffbot',
++        ['通用抓取'],
++        '为知识图谱与网页搜索抓取网页；官方说明不用于训练生成式 AI 基础模型。',
++        { reviewedAt: '2026-10-28' },
++      ],
++      [
++        'Diffbot-User',
++        ['用户触发'],
++        '用户使用 Diffbot 软件浏览指定网址时发出的请求。',
++        { reviewedAt: '2026-10-28' },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'LY Corporation (LINE)',
++      sources: [source('LINE：Linespider', 'https://help2.line.me/linesearchbot/web/pc?lang=en')],
++      verification: noFeed,
++      robots: '官方说明遵循 Robots Exclusion Protocol。',
++    },
++    [
++      [
++        'Linespider',
++        ['传统搜索'],
++        '为 LINE 服务内的搜索结果收集网页；官方说明未提及 AI 训练。',
++        { reviewedAt: '2026-10-28' },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'Yahoo',
++      sources: [source('Yahoo：Slurp', 'https://help.yahoo.com/kb/SLN22600.html')],
++      verification: noFeed,
++      robots: 'robots.txt 使用 Slurp 作为 token。',
++    },
++    [
++      [
++        'Slurp',
++        ['传统搜索'],
++        'Yahoo 搜索的网页抓取与索引机器人；官方说明搜索结果同时来自 Bing 的 crawler。',
++        { reviewedAt: '2026-10-28', aliases: ['Yahoo! Slurp', 'Yahoo奇摩'] },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'SB Intuitions',
++      sources: [source('SB Intuitions：Bot', 'https://www.sbintuitions.co.jp/en/bot/')],
++      verification: noFeed,
++      robots: '官方说明遵循 RFC 9309。',
++    },
++    [
++      [
++        'SBIntuitionsBot',
++        ['训练'],
++        '日本 SoftBank 旗下 SB Intuitions 用于 AI 开发与信息分析的抓取。',
++        { reviewedAt: '2026-10-28' },
++      ],
++      [
++        'SBIntuitions-SearchBot',
++        ['用户触发'],
++        '为 Sarashina 服务获取网页；官方说明这些信息不用于 AI 开发。',
++        { reviewedAt: '2026-10-28', robotsToken: undefined },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'NICT',
++      sources: [source('NICT：ICC-Crawler', 'https://ucri.nict.go.jp/en/icccrawler.html')],
++      verification: noFeed,
++      robots: '官方页面提供 ICC-Crawler 的 robots 示例。',
++    },
++    [
++      [
++        'ICC-Crawler',
++        ['研究数据'],
++        '日本情报通信研究机构的研究抓取，用途包括人工智能技术研究。',
++        { reviewedAt: '2026-10-28' },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'ROIS-DS',
++      sources: [source('ROIS-DS：Cotoyogi', 'https://ds.rois.ac.jp/center8/crawler/')],
++      verification: noFeed,
++      robots: '官方页面提供 Cotoyogi 的 robots 说明。',
++    },
++    [
++      [
++        'Cotoyogi',
++        ['研究数据'],
++        '为日语数据资源收集运行的研究抓取；官方页面未说明 AI 用途。',
++        { reviewedAt: '2026-10-28' },
++      ],
++    ],
++  ),
++  ...vendor(
++    {
++      name: 'Yandex',
++      sources: [
++        source(
++          'Yandex：Robots',
++          'https://yandex.com/support/webmaster/en/robot-workings/check-yandex-robots.html',
++        ),
++      ],
++      verification: noFeed,
++      robots: 'robots.txt 使用 YandexAdditional 排除 Yandex AI 回答。',
++    },
++    [
++      [
++        'YandexAdditionalBot',
++        ['AI 搜索'],
++        '处理 robots.txt，用于决定内容是否出现在 Yandex AI 搜索回答中。',
++        { reviewedAt: '2026-10-28', robotsToken: 'YandexAdditional' },
++      ],
++    ],
++  ),
+   ...vendor(
+     {
+       name: 'Petal Search',
+diff --git a/src/lib/liekan/crawlers/catalog-validation.test.ts b/src/lib/liekan/crawlers/catalog-validation.test.ts
+index 45bee96..fc876d3 100644
+--- a/src/lib/liekan/crawlers/catalog-validation.test.ts
++++ b/src/lib/liekan/crawlers/catalog-validation.test.ts
+@@ -37,12 +37,12 @@ describe('catalog publication boundaries', () => {
+     const p = validateCatalog(seed());
+     expect(
+       p.identities.filter(item => item.status === 'active' && item.kind === 'http_crawler'),
+-    ).toHaveLength(60);
++    ).toHaveLength(73);
+     expect(
+       p.identities.filter(
+         item => item.status === 'active' && item.kind === 'http_crawler' && item.aiEligible,
+       ),
+-    ).toHaveLength(26);
++    ).toHaveLength(33);
+     expect(p.identities.filter(item => item.control.remote)).toHaveLength(13);
+     expect(Object.isFrozen(getBundledPublishedCatalog().payload.identities[0])).toBe(true);
+   });
+diff --git a/src/lib/liekan/crawlers/foundations.test.ts b/src/lib/liekan/crawlers/foundations.test.ts
+index af3a98d..3acc82b 100644
+--- a/src/lib/liekan/crawlers/foundations.test.ts
++++ b/src/lib/liekan/crawlers/foundations.test.ts
+@@ -37,7 +37,7 @@ const ids = [
+ 
+ describe('crawler directory and contracts', () => {
+   it('maps every unchanged existing rule to one historical stable identity', () => {
+-    expect(new Set(BOT_RULES.map(crawlerIdForRule)).size).toBe(57);
++    expect(new Set(BOT_RULES.map(crawlerIdForRule)).size).toBe(70);
+     for (const rule of BOT_RULES) {
+       expect(getCrawler(crawlerIdForRule(rule)).uaSelector).toBe(rule.pattern);
+       expect(crawlerIdForName(rule.name)).toBe(crawlerIdForRule(rule));
+diff --git a/src/lib/liekan/crawlers/registry.test.ts b/src/lib/liekan/crawlers/registry.test.ts
+index 798f06a..b9dd525 100644
+--- a/src/lib/liekan/crawlers/registry.test.ts
++++ b/src/lib/liekan/crawlers/registry.test.ts
+@@ -27,12 +27,28 @@ const policy = {
+   expectedAccess: 'block',
+ };
+ 
++// GEOInflow TW additions reviewed against operator documentation on 2026-10-28.
++const taiwanReviewedIds = [
++  'google-agent',
++  'google-gemininotebook',
++  'meta-webindexer',
++  'meta-externalads',
++  'diffbot',
++  'diffbot-user',
++  'linespider',
++  'yahoo-slurp',
++  'sbintuitionsbot',
++  'sbintuitions-searchbot',
++  'icc-crawler',
++  'cotoyogi',
++  'yandexadditionalbot',
++];
+ describe('central crawler identity registry', () => {
+-  it('keeps 61 catalog entries, 58 HTTP entries, 57 recognized names and 3 purpose controls', () => {
+-    expect(crawlerCatalog).toHaveLength(61);
+-    expect(new Set(crawlerCatalog.map(entry => entry.id)).size).toBe(61);
+-    expect(crawlerRegistry.filter(entry => entry.kind === 'http_crawler')).toHaveLength(58);
+-    expect(ALL_HTTP_CRAWLER_IDS).toHaveLength(57);
++  it('keeps 74 catalog entries, 71 HTTP entries, 70 recognized names and 3 purpose controls', () => {
++    expect(crawlerCatalog).toHaveLength(74);
++    expect(new Set(crawlerCatalog.map(entry => entry.id)).size).toBe(74);
++    expect(crawlerRegistry.filter(entry => entry.kind === 'http_crawler')).toHaveLength(71);
++    expect(ALL_HTTP_CRAWLER_IDS).toHaveLength(70);
+     expect(ACTIVE_CRAWLER_IDS).toEqual(ALL_HTTP_CRAWLER_IDS);
+     expect(crawlerRegistry.filter(entry => entry.kind === 'robots_purpose')).toHaveLength(3);
+     expect(
+@@ -67,7 +83,9 @@ describe('central crawler identity registry', () => {
+       expect(entry.metadata.reviewedAt).toBe(
+         ['kimibot', 'kimi-searchbot', 'kimi-user', 'hyspider'].includes(entry.id)
+           ? '2026-10-21'
+-          : '2026-10-05',
++          : taiwanReviewedIds.includes(entry.id)
++            ? '2026-10-28'
++            : '2026-10-05',
+       );
+     }
+     for (const name of [
+diff --git a/src/lib/liekan/crawlers/registry.ts b/src/lib/liekan/crawlers/registry.ts
+index 8b58c71..4f90831 100644
+--- a/src/lib/liekan/crawlers/registry.ts
++++ b/src/lib/liekan/crawlers/registry.ts
+@@ -34,6 +34,12 @@ export const crawlerPlatformIds = [
+   'semrush',
+   'majestic',
+   'petal',
++  'diffbot',
++  'line',
++  'yahoo',
++  'sb-intuitions',
++  'nict',
++  'rois',
+ ] as const;
+ export type CrawlerPlatformId = string;
+ 
+@@ -195,6 +201,35 @@ export const crawlerRegistry = [
+     status: 'pending',
+     robotsToken: null,
+   }),
++  // GEOInflow TW additions (operator documentation reviewed 2026-10-28, see docs/tw/crawlers.md).
++  http('google-agent', 'Google-Agent', 'google', 'Google', 'user', { robotsToken: null }),
++  http('google-gemininotebook', 'Google-GeminiNotebook', 'google', 'Google', 'user', {
++    robotsToken: null,
++  }),
++  http('meta-webindexer', 'Meta-WebIndexer', 'meta', 'Meta', 'search'),
++  http('meta-externalads', 'Meta-ExternalAds', 'meta', 'Meta', 'other'),
++  http('diffbot', 'Diffbot', 'diffbot', 'Diffbot', 'other'),
++  http('diffbot-user', 'Diffbot-User', 'diffbot', 'Diffbot', 'user'),
++  http('linespider', 'Linespider', 'line', 'LY Corporation (LINE)', 'traditional_search'),
++  http('yahoo-slurp', 'Slurp', 'yahoo', 'Yahoo', 'traditional_search', {
++    robotsToken: 'Slurp',
++  }),
++  http('sbintuitionsbot', 'SBIntuitionsBot', 'sb-intuitions', 'SB Intuitions', 'training'),
++  http(
++    'sbintuitions-searchbot',
++    'SBIntuitions-SearchBot',
++    'sb-intuitions',
++    'SB Intuitions',
++    'user',
++    {
++      robotsToken: null,
++    },
++  ),
++  http('icc-crawler', 'ICC-Crawler', 'nict', 'NICT', 'other'),
++  http('cotoyogi', 'Cotoyogi', 'rois', 'ROIS-DS', 'other'),
++  http('yandexadditionalbot', 'YandexAdditionalBot', 'yandex', 'Yandex', 'search', {
++    robotsToken: 'YandexAdditional',
++  }),
+ ] as const;
+ 
+ export interface CrawlerRegistryEntry {
+diff --git a/src/lib/liekan/rules/bots.test.ts b/src/lib/liekan/rules/bots.test.ts
+index 2a51c5b..940361a 100644
+--- a/src/lib/liekan/rules/bots.test.ts
++++ b/src/lib/liekan/rules/bots.test.ts
+@@ -15,6 +15,7 @@ const expectedTypes = {
+     'Meta-ExternalAgent',
+     'FacebookBot',
+     'Bytespider',
++    'SBIntuitionsBot',
+   ],
+   搜索: [
+     'OAI-SearchBot',
+@@ -24,6 +25,8 @@ const expectedTypes = {
+     'Amzn-SearchBot',
+     'MistralAI-Index',
+     'DuckAssistBot',
++    'Meta-WebIndexer',
++    'YandexAdditionalBot',
+   ],
+   用户触发: [
+     'ChatGPT-User',
+@@ -34,6 +37,10 @@ const expectedTypes = {
+     'MistralAI-User',
+     'Meta-ExternalFetcher',
+     'Google-InspectionTool',
++    'Google-Agent',
++    'Google-GeminiNotebook',
++    'Diffbot-User',
++    'SBIntuitions-SearchBot',
+   ],
+   传统搜索: [
+     'Googlebot',
+@@ -55,6 +62,8 @@ const expectedTypes = {
+     'Qwantbot',
+     'Qwantbot-news',
+     'MojeekBot',
++    'Linespider',
++    'Slurp',
+   ],
+   其他: [
+     'OAI-AdsBot',
+@@ -70,6 +79,10 @@ const expectedTypes = {
+     'SemrushBot',
+     'SiteAuditBot',
+     'MJ12bot',
++    'Meta-ExternalAds',
++    'Diffbot',
++    'ICC-Crawler',
++    'Cotoyogi',
+   ],
+ };
+ 
+@@ -111,8 +124,8 @@ describe('official crawler token recognition', () => {
+   });
+ 
+   it('prepares every approved HTTP name with its independently specified primary type', () => {
+-    expect(ALL_BOT_RULES).toHaveLength(57);
+-    expect(new Set(ALL_BOT_RULES.map(rule => rule.crawlerId)).size).toBe(57);
++    expect(ALL_BOT_RULES).toHaveLength(70);
++    expect(new Set(ALL_BOT_RULES.map(rule => rule.crawlerId)).size).toBe(70);
+     for (const [type, names] of Object.entries(expectedTypes)) {
+       expect(
+         ALL_BOT_RULES.filter(rule => rule.type === type)
+@@ -188,7 +201,7 @@ describe('official crawler token recognition', () => {
+   });
+ 
+   it('keeps AI eligibility separate from user-triggered and display classifications', () => {
+-    expect(ALL_BOT_RULES.filter(rule => rule.aiEligible)).toHaveLength(24);
++    expect(ALL_BOT_RULES.filter(rule => rule.aiEligible)).toHaveLength(31);
+     expect(classifyBot('Google-InspectionTool/1.0', ALL_BOT_RULES)).toMatchObject({
+       type: '用户触发',
+       aiEligible: false,

@@ -21,7 +21,7 @@ export function useDateRange(options: { ignoreOffset?: boolean; timezone?: strin
   const accountTimezone = useApp(state => state.timezone);
   const timezone = publicView
     ? sharedTimezone(share?.parameters)
-    : options.timezone || accountTimezone || 'Asia/Shanghai';
+    : options.timezone || accountTimezone || 'Asia/Taipei';
   const defaultRange = useApp(state => state.dateRangeValue);
   const publicDefault =
     typeof share?.parameters?.range === 'string'

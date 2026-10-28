@@ -10,9 +10,9 @@ describe('real export constraints', () => {
     body => {
       const input = { ...body, startAt: 0, endAt: 1000 };
       expect(exportRequestSchema.parse(input)).not.toHaveProperty('locale');
-      for (const locale of ['zh-CN', 'en-US'])
+      for (const locale of ['zh-TW', 'zh-CN', 'en-US'])
         expect(exportRequestSchema.parse({ ...input, locale }).locale).toBe(locale);
-      for (const locale of ['', 'en-GB', 'zh-TW', null, {}, '=cmd()'])
+      for (const locale of ['', 'en-GB', 'zh-HK', null, {}, '=cmd()'])
         expect(exportRequestSchema.safeParse({ ...input, locale }).success).toBe(false);
     },
   );

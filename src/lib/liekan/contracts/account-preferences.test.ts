@@ -30,7 +30,7 @@ describe('bundled account country and timezone catalog', () => {
     expect(countryTimezoneChoices('US')).toContain('America/Los_Angeles');
     expect(countryTimezoneChoices('US')).toContain('America/New_York');
     expect(countryTimezoneChoices('unknown')).toEqual([]);
-    expect(ACCOUNT_DEFAULT_TIMEZONE).toBe('Asia/Shanghai');
+    expect(ACCOUNT_DEFAULT_TIMEZONE).toBe('Asia/Taipei');
     expect(ACCOUNT_DEFAULT_RANGE).toBe('0day');
   });
 

@@ -2,6 +2,7 @@
 import { getApiUrl } from '@/lib/api-url';
 import { getClientAuthToken } from '@/lib/client';
 import { FeatureApiError } from './features-client';
+import { isLiekanLocale, storageLiekanLocale } from '../i18n/locale';
 
 export async function downloadHistoryRepair(
   websiteId: string,
@@ -14,7 +15,7 @@ export async function downloadHistoryRepair(
     window.location.origin,
   );
   url.searchParams.set('generation', generation);
-  url.searchParams.set('locale', locale);
+  url.searchParams.set('locale', isLiekanLocale(locale) ? storageLiekanLocale(locale) : locale);
   const response = await fetch(url, {
     signal,
     cache: 'no-store',

@@ -201,7 +201,7 @@ export function FeatureApp({
     ].includes(route.page);
   const preferences = getFeaturePreferences();
   const accountPreferences = useAccountPreferences();
-  const timezone = accountPreferences?.timezone || preferences.timezone || 'Asia/Shanghai';
+  const timezone = accountPreferences?.timezone || preferences.timezone || 'Asia/Taipei';
   const { dateRange, invalidDate } = useFeatureDateRange(timezone);
   const range = useMemo(
     () => featureDateRange(dateRange, timezone),

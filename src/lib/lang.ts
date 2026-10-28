@@ -46,6 +46,7 @@ import {
   uz,
   vi,
   zhCN,
+  zhTW,
 } from 'date-fns/locale';
 
 export const languages = {
@@ -102,6 +103,7 @@ export const languages = {
   'uz-UZ': { label: 'O‘zbekcha', dateLocale: uz },
   'vi-VN': { label: 'Tiếng Việt', dateLocale: vi },
   'zh-CN': { label: '中文', dateLocale: zhCN },
+  'zh-TW': { label: '繁體中文（台灣）', dateLocale: zhTW },
 };
 
 export function getDateLocale(locale: string) {

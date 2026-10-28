@@ -5,6 +5,7 @@ import {
   assertDisplayMetadata,
   assertIdentityTranslations,
   assertLanguagePair,
+  assertTraditionalPair,
 } from '../../scripts/liekan-i18n-contract.mjs';
 const pair = (source, english) => {
   const key = `m_${createHash('sha256').update(source).digest('hex').slice(0, 12)}`;
@@ -130,6 +131,23 @@ test('refuses lost or reordered placeholders and untranslated display text', () 
     /placeholders differ/,
   );
   assert.throws(() => assertLanguagePair(...pair('已保存', '已保存')), /Unreviewed Chinese/);
+});
+test('accepts Taiwan Traditional messages and refuses Simplified residue or lost placeholders', () => {
+  assert.doesNotThrow(() =>
+    assertTraditionalPair(...pair('已读取 {v0} 条网站数据', '已讀取 {v0} 筆網站資料')),
+  );
+  assert.doesNotThrow(() => assertTraditionalPair(...pair('猎看科技', '猎看科技')));
+  assert.throws(() => assertTraditionalPair(...pair('网站设置', '网站設定')), /Simplified character/);
+  assert.throws(
+    () => assertTraditionalPair(...pair('{v0}至{v1}', '{v1}至{v0}')),
+    /placeholders differ/,
+  );
+  assert.throws(
+    () => assertTraditionalPair(...pair('eq.AI 搜索引荐', 'eq.AI 搜尋引薦')),
+    /Protected literal/,
+  );
+  const [zh] = pair('已保存', '已儲存');
+  assert.throws(() => assertTraditionalPair(zh, {}), /key\/order mismatch/);
 });
 test('refuses changing protected code or using its exception for unrelated Chinese', () => {
   assert.throws(

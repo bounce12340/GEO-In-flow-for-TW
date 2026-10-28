@@ -79,7 +79,7 @@ export function useWebsiteValuesQuery({
         {},
         signal,
       );
-      return type === 'city' ? cityValueOptions(rows, locale === 'zh-CN') : rows;
+      return type === 'city' ? cityValueOptions(rows, locale === 'zh-CN' || locale === 'zh-TW') : rows;
     },
     enabled: !!(websiteId && type && startDate && endDate),
   });

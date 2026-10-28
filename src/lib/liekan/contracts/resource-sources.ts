@@ -3,7 +3,7 @@ export const resourceSourcesQuery = z
   .object({
     startAt: z.coerce.number().int().nonnegative(),
     endAt: z.coerce.number().int().nonnegative(),
-    timezone: z.string().max(80).default('Asia/Shanghai'),
+    timezone: z.string().max(80).default('Asia/Taipei'),
     page: z.coerce.number().int().positive().max(100000).default(1),
   })
   .catchall(z.string().max(2000))

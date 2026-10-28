@@ -12325,7 +12325,7 @@ export interface operations {
           endAt: string;
           expectedConfigVersion: number;
           /** @enum {string} */
-          locale?: 'zh-CN' | 'en-US';
+          locale?: 'zh-TW' | 'zh-CN' | 'en-US';
           localOnly?: boolean;
           question: string;
           /**
@@ -17238,7 +17238,7 @@ export interface operations {
           startAt?: number;
           /**
            * @description IANA time zone used to interpret dates and group results, for example America/New_York.
-           * @default Asia/Shanghai
+           * @default Asia/Taipei
            */
           timezone?: string;
         };
@@ -24879,7 +24879,7 @@ export interface operations {
               /** @constant */
               kind: 'geography';
               /** @enum {string} */
-              locale?: 'zh-CN' | 'en-US';
+              locale?: 'zh-TW' | 'zh-CN' | 'en-US';
               /**
                * @description Search text used to filter results.
                * @default
@@ -24889,7 +24889,7 @@ export interface operations {
               startAt: number;
               /**
                * @description IANA time zone used to interpret dates and group results, for example America/New_York.
-               * @default Asia/Shanghai
+               * @default Asia/Taipei
                */
               timezone?: string;
             }
@@ -24918,7 +24918,7 @@ export interface operations {
               /** @constant */
               kind: 'source-keywords';
               /** @enum {string} */
-              locale?: 'zh-CN' | 'en-US';
+              locale?: 'zh-TW' | 'zh-CN' | 'en-US';
               /**
                * @description Search text used to filter results.
                * @default
@@ -24955,7 +24955,7 @@ export interface operations {
                 | 'redacted';
               /**
                * @description IANA time zone used to interpret dates and group results, for example America/New_York.
-               * @default Asia/Shanghai
+               * @default Asia/Taipei
                */
               timezone?: string;
             }
@@ -24973,13 +24973,13 @@ export interface operations {
               format: 'zip' | 'csv' | 'json';
               kind?: never;
               /** @enum {string} */
-              locale?: 'zh-CN' | 'en-US';
+              locale?: 'zh-TW' | 'zh-CN' | 'en-US';
               sections: ('summary' | 'dimensions' | 'events' | 'sessions' | 'config')[];
               /** @description Start of the date range as a Unix timestamp in milliseconds. */
               startAt: number;
               /**
                * @description IANA time zone used to interpret dates and group results, for example America/New_York.
-               * @default Asia/Shanghai
+               * @default Asia/Taipei
                */
               timezone?: string;
             };

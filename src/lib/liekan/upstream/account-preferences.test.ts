@@ -77,7 +77,7 @@ beforeEach(() => {
 it('GET returns the default without creating or confirming preferences', async () => {
   expect(await readAccountPreferences(request)).toEqual({
     countryCode: 'CN',
-    timezone: 'Asia/Shanghai',
+    timezone: 'Asia/Taipei',
     range: '0day',
     configured: false,
     updatedAt: null,
@@ -143,17 +143,21 @@ it('initializes once and preserves server values over later browser values', asy
 });
 
 it.each([
-  {},
-  { timezone: 'invalid/zone', range: 'garbage' },
-  { timezone: 'Asia/Shanghai', range: '24hour' },
-])('initializes the China/Today default from %s', async input => {
-  expect(await initializeAccountPreferences(request, input)).toMatchObject({
-    countryCode: 'CN',
-    timezone: 'Asia/Shanghai',
-    range: '0day',
-    configured: false,
-  });
-});
+  [{}, 'Asia/Taipei'],
+  [{ timezone: 'invalid/zone', range: 'garbage' }, 'Asia/Taipei'],
+  [{ timezone: 'Asia/Shanghai', range: '24hour' }, 'Asia/Shanghai'],
+  [{ timezone: 'Asia/Taipei', range: '24hour' }, 'Asia/Taipei'],
+])(
+  'initializes the Taipei/Today default or a catalog browser zone from %s',
+  async (input, timezone) => {
+    expect(await initializeAccountPreferences(request, input)).toMatchObject({
+      countryCode: 'CN',
+      timezone,
+      range: '0day',
+      configured: false,
+    });
+  },
+);
 
 it('explicit confirmation accepts a matching alias and remains authoritative on initialization', async () => {
   const saved = await saveAccountPreferences(request, {
@@ -185,7 +189,7 @@ it('keeps users isolated and rejects caller-supplied identity fields', async () 
   h.actorId = otherId;
   expect(await readAccountPreferences(request)).toMatchObject({
     configured: false,
-    timezone: 'Asia/Shanghai',
+    timezone: 'Asia/Taipei',
   });
   await initializeAccountPreferences(request, { timezone: 'Europe/London', range: '90day' });
   h.actorId = actorId;

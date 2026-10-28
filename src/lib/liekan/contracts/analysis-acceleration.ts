@@ -31,7 +31,7 @@ export const analysisBuildInputSchema = z
     preset: z.enum(['common', 'custom', 'retained']).default('common'),
     startAt: z.number().int().min(0).optional(),
     endAt: z.number().int().min(0).optional(),
-    timezone: z.string().min(1).max(80).default('Asia/Shanghai'),
+    timezone: z.string().min(1).max(80).default('Asia/Taipei'),
     locale: z.enum(['zh-CN', 'en-US']).default('zh-CN'),
     requestId: z.uuid(),
     expectedRevision: z.number().int().min(0),

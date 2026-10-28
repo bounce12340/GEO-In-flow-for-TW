@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.liekan
       args:
         LIEKAN_REVISION: ${LIEKAN_REVISION:-development}
+        LIEKAN_NPM_REGISTRY: ${LIEKAN_NPM_REGISTRY:-}
     ports:
       - '127.0.0.1:3002:3000'
     environment:
@@ -15,7 +16,7 @@ services:
       TWO_FACTOR_ENCRYPTION_KEY: ${TWO_FACTOR_ENCRYPTION_KEY:?TWO_FACTOR_ENCRYPTION_KEY required}
       DISABLE_TELEMETRY: '1'
       NEXT_TELEMETRY_DISABLED: '1'
-      DEFAULT_LOCALE: zh-CN
+      DEFAULT_LOCALE: ${DEFAULT_LOCALE:-zh-TW}
       CLIENT_IP_HEADER: ${CLIENT_IP_HEADER:-}
       IGNORE_IP: ${IGNORE_IP:-}
       GEOLITE_DB_PATH: ${GEOLITE_DB_PATH:-}

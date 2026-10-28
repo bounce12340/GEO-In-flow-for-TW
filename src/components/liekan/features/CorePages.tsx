@@ -87,7 +87,7 @@ import { rememberAggregateFailure } from '@/lib/liekan/upstream/client-freshness
 
 const basePath = process.env.basePath || '';
 const appPath = (path: string) => featureNavigationPath(path, basePath);
-const formatDate = (value: any, timezone = getFeaturePreferences().timezone || 'Asia/Shanghai') =>
+const formatDate = (value: any, timezone = getFeaturePreferences().timezone || 'Asia/Taipei') =>
   value ? new Date(value).toLocaleString('zh-CN', { timeZone: timezone }) : '尚未接收';
 const sitePath = (id: string) => `/websites/${id}`;
 const transientCodes = new Map<string, string[]>();
@@ -903,9 +903,9 @@ function SetupStatus({
       <Body>
         <p className="field-help">
           {i18n.fragment('浏览采集核对网站创建至今的页面访问。日志统计期间：', false, true)}
-          {formatInTimeZone(c.range.startAt, c.range.timezone || 'Asia/Shanghai', 'yyyy-MM-dd')}
+          {formatInTimeZone(c.range.startAt, c.range.timezone || 'Asia/Taipei', 'yyyy-MM-dd')}
           {i18n.fragment(' 至', true, true)}{' '}
-          {formatInTimeZone(c.range.endAt, c.range.timezone || 'Asia/Shanghai', 'yyyy-MM-dd')} ·{' '}
+          {formatInTimeZone(c.range.endAt, c.range.timezone || 'Asia/Taipei', 'yyyy-MM-dd')} ·{' '}
           {c.range.timezone}。
         </p>
         <Definition

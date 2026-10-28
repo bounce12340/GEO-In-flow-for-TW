@@ -12,7 +12,7 @@ export function useDateRangeClock(timezone: string, dynamic = true) {
   useEffect(() => {
     if (!dynamic) return;
     const formatter = new Intl.DateTimeFormat('en-CA', {
-      timeZone: timezone || 'Asia/Shanghai',
+      timeZone: timezone || 'Asia/Taipei',
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -31,7 +31,7 @@ export function useDateRangeClock(timezone: string, dynamic = true) {
       30000,
       Math.max(
         20,
-        calendarDayRange(Date.now(), timezone || 'Asia/Shanghai').endAt + 2 - Date.now(),
+        calendarDayRange(Date.now(), timezone || 'Asia/Taipei').endAt + 2 - Date.now(),
       ),
     );
     const boundary = setTimeout(check, delay);

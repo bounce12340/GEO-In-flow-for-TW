@@ -101,7 +101,7 @@ function ManagementDrawerContent({
 }) {
   const i18n = useLiekanI18n();
   const api = useApi();
-  const timezone = getFeaturePreferences().timezone || 'Asia/Shanghai';
+  const timezone = getFeaturePreferences().timezone || 'Asia/Taipei';
   const formId = useId();
   const saving = useRef(false);
   const [content, setContent] = useState(action === '日志查询' ? initialSearch || '' : '');
@@ -810,7 +810,7 @@ function ManagementDrawerContent({
               {busy
                 ? i18n.locale === 'en-US'
                   ? i18n.system(submitLabel) + '…'
-                  : '正在' + submitLabel + '…'
+                  : '正在' + i18n.system(submitLabel) + '…'
                 : i18n.system(submitLabel)}
             </button>
           )}

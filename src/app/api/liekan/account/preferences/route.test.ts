@@ -107,7 +107,7 @@ it('GET returns a no-store default response for a complete password-authenticate
   expect(response.headers.get('cache-control')).toBe('private, no-store');
   expect(await response.json()).toEqual({
     countryCode: 'CN',
-    timezone: 'Asia/Shanghai',
+    timezone: 'Asia/Taipei',
     range: '0day',
     configured: false,
     updatedAt: null,

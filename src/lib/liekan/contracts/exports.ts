@@ -10,7 +10,7 @@ const standardExportRequestSchema = z
     locale: exportLocaleSchema,
     startAt: z.number().int().nonnegative(),
     endAt: z.number().int().nonnegative(),
-    timezone: z.string().max(80).default('Asia/Shanghai'),
+    timezone: z.string().max(80).default('Asia/Taipei'),
     format: z.enum(['zip', 'csv', 'json']),
     sections: z.array(z.enum(exportSections)).min(1).max(5),
     filters: z.record(z.string(), z.string().max(2000)).default({}),
@@ -26,7 +26,7 @@ export const keywordExportRequestSchema = keywordConditionsSchema
     format: z.literal('csv'),
     startAt: z.number().int().nonnegative(),
     endAt: z.number().int().nonnegative(),
-    timezone: z.string().max(80).default('Asia/Shanghai'),
+    timezone: z.string().max(80).default('Asia/Taipei'),
   })
   .refine(p => p.endAt >= p.startAt && p.endAt - p.startAt <= 1096 * 86400000, {
     message: '日期范围上限 3 年',
@@ -39,7 +39,7 @@ export const exportRequestSchema = z.union([
       format: z.literal('csv'),
       startAt: z.number().int().nonnegative(),
       endAt: z.number().int().nonnegative(),
-      timezone: z.string().max(80).default('Asia/Shanghai'),
+      timezone: z.string().max(80).default('Asia/Taipei'),
       search: z.string().max(200).default(''),
       geoSort: z.enum(geographySorts).default('sessions'),
       direction: z.enum(['asc', 'desc']).default('desc'),

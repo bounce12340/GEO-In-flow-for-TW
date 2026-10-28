@@ -111,7 +111,7 @@ export function SharedWebsiteOverview({
       const place = card && report?.meta.geography?.cards?.[card.key];
       return [
         i18n.system(label),
-        place && i18n.locale === 'en-US'
+        place && i18n.locale !== 'zh-CN'
           ? label === '海外 TOP1'
             ? countryName(place.country, i18n.locale)
             : geographyLabel(place, i18n.locale)
@@ -316,7 +316,7 @@ export function SharedWebsiteOverview({
                 ].map(field => {
                   const place = report?.meta.geography?.tables?.cityBody?.[index];
                   const display =
-                    field === 'city' && place && i18n.locale === 'en-US'
+                    field === 'city' && place && i18n.locale !== 'zh-CN'
                       ? geographyLabel(place, i18n.locale)
                       : formatCellValue(row, field, 'cityBody', i18n.locale, i18n.system);
                   return (

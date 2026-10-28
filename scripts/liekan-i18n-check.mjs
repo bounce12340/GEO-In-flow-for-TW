@@ -3,6 +3,7 @@ import {
   assertIdentityTranslations,
   assertLanguagePair,
   assertOwnedSourceMetadata,
+  assertTraditionalPair,
 } from './liekan-i18n-contract.mjs';
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
@@ -15,7 +16,11 @@ const normalize = text => text.trim().replace(/\s+/g, ' ');
 for (const directory of roots) {
   const chinese = JSON.parse(readFileSync(`src/lib/liekan/i18n/${directory}/zh-CN.json`, 'utf8'));
   const english = JSON.parse(readFileSync(`src/lib/liekan/i18n/${directory}/en-US.json`, 'utf8'));
+  const traditional = JSON.parse(
+    readFileSync(`src/lib/liekan/i18n/${directory}/zh-TW.json`, 'utf8'),
+  );
   assertLanguagePair(chinese, english, directory);
+  assertTraditionalPair(chinese, traditional, directory);
   for (const [key, source] of Object.entries(chinese)) {
     messages.set(normalize(source), key);
     if (directory === 'messages') coreMessages.set(normalize(source), key);
@@ -88,5 +93,5 @@ for (const file of [...visit('src/components/liekan'), 'src/lib/liekan/i18n/text
   assertIdentityTranslations(ast, file);
 }
 console.log(
-  `Liekan bilingual catalogs passed: ${messages.size} messages, placeholders and executable literals preserved.`,
+  `Liekan zh-TW/zh-CN/en-US catalogs passed: ${messages.size} messages, placeholders and executable literals preserved.`,
 );

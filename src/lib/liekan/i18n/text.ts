@@ -1,10 +1,11 @@
 import chinese from './messages/zh-CN.json';
 import english from './messages/en-US.json';
+import traditional from './messages/zh-TW.json';
 import type { LiekanLocale } from './locale';
 
 export type MessageCatalog = Record<string, string>;
 export const normalizeMessage = (source: string) => source.trim().replace(/\s+/g, ' ');
-export const liekanMessages = { 'zh-CN': chinese, 'en-US': english };
+export const liekanMessages = { 'zh-CN': chinese, 'en-US': english, 'zh-TW': traditional };
 
 export function fillMessage(source: string, values: readonly unknown[] = []) {
   return source.replace(/\{v(\d+)\}/g, (token, index) =>
@@ -54,6 +55,7 @@ function pluralMessage(message: string, values: readonly unknown[]) {
 }
 export function countUnit(source: string, count: unknown, locale: LiekanLocale) {
   if (locale === 'zh-CN') return source;
+  if (locale === 'zh-TW') return translateText(source, locale);
   const unit = ({ 页: 'page', 条: 'item', 次: 'time' } as Record<string, string>)[source.trim()];
   if (unit) return unit + (Number(count) === 1 ? '' : 's');
   const text = translateText(source, locale);
@@ -62,7 +64,13 @@ export function countUnit(source: string, count: unknown, locale: LiekanLocale) 
     : text;
 }
 
-export function createTranslator(chinese: MessageCatalog, english: MessageCatalog) {
+export function createTranslator(
+  chinese: MessageCatalog,
+  english: MessageCatalog,
+  traditional: MessageCatalog = {},
+) {
+  const catalog = (locale: LiekanLocale) =>
+    locale === 'en-US' ? english : locale === 'zh-TW' ? traditional : undefined;
   const sourceKeys = new Map(
     Object.entries(chinese).map(([key, source]) => [normalizeMessage(source), key]),
   );
@@ -93,9 +101,10 @@ export function createTranslator(chinese: MessageCatalog, english: MessageCatalo
     );
 
   function systemText(value: string, locale: LiekanLocale = 'zh-CN', depth = 0): string {
-    if (locale === 'zh-CN' || !value || depth > 4) return value;
+    const target = catalog(locale);
+    if (!target || !value || depth > 4) return value;
     const message = key(value);
-    if (message) return english[message] || value;
+    if (message) return target[message] || value;
     for (const template of templates) {
       const match = template.pattern.exec(value);
       if (!match) continue;
@@ -105,7 +114,11 @@ export function createTranslator(chinese: MessageCatalog, english: MessageCatalo
       });
       for (const slot of ownedSlots[template.source] || [])
         values[slot] = systemText(values[slot], locale, depth + 1);
-      return fillMessage(pluralMessage(english[template.key] || value, values), values);
+      const translated = target[template.key] || value;
+      return fillMessage(
+        locale === 'en-US' ? pluralMessage(translated, values) : translated,
+        values,
+      );
     }
     return value;
   }
@@ -113,11 +126,11 @@ export function createTranslator(chinese: MessageCatalog, english: MessageCatalo
     key,
     text(source: string, locale: LiekanLocale = 'zh-CN', values: readonly unknown[] = []) {
       const message = key(source);
-      const translated = locale === 'en-US' && message ? english[message] : undefined;
+      const translated = message ? catalog(locale)?.[message] : undefined;
       return fillMessage(
         translated
           ? source.match(/^\s*/)?.[0] +
-              pluralMessage(translated, values) +
+              (locale === 'en-US' ? pluralMessage(translated, values) : translated) +
               source.match(/\s*$/)?.[0]
           : source,
         values,
@@ -128,7 +141,11 @@ export function createTranslator(chinese: MessageCatalog, english: MessageCatalo
   };
 }
 
-const translator = createTranslator(chinese as MessageCatalog, english as MessageCatalog);
+const translator = createTranslator(
+  chinese as MessageCatalog,
+  english as MessageCatalog,
+  traditional as MessageCatalog,
+);
 export const messageKey = translator.key;
 export const translateText = translator.text;
 export const translateSystemText = translator.system;
