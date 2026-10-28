@@ -45,10 +45,14 @@ test.each([
 test('selects English display by stable IDs and keeps uncertain or missing geography explicit', () => {
   const value = { country: 'CN', region: 'CN-SN', city: '西安' };
   const identity = identifyCity(value);
-  expect(countryName('TW', 'en-US')).toBe('China');
+  expect(countryName('TW', 'en-US')).toBe('Taiwan');
+  expect(countryName('CN', 'en-US')).toBe('China');
   expect(regionName('CN-SN', 'CN', 'en-US')).toBe('Shaanxi');
   expect(regionName('CN-SX', 'CN', 'en-US')).toBe('Shanxi');
-  expect(regionName('TW-TPE', 'TW', 'en-US')).toBe('Taiwan');
+  expect(regionName('TW-TPE', 'TW', 'en-US')).toBe('TW-TPE');
+  expect(visitorGeographyLabel({ country: 'CN', region: 'CN-TPE', city: 'Taipei' }, 'en-US')).toBe(
+    'Taipei, TW-TPE, Taiwan',
+  );
   expect(regionName('CN-SD', 'US', 'en-US')).toBe('CN-SD');
   expect(geographyLabel(value, 'en-US')).toBe("Xi'an");
   expect(geographyLabel({ ...geographyDisplay(value), city: null }, 'en-US')).toBe("Xi'an");

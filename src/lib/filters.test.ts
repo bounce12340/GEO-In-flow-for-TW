@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { ISO_COUNTRIES } from './constants';
-import { LEGACY_COUNTRY_CODE } from './country';
+import { TAIWAN_ALPHA3_CODE } from './country';
 import { mergeCountryMetrics, paramFilter, percentFilter } from './filters';
 
 describe('percentFilter', () => {
@@ -77,18 +77,20 @@ test('maps China geography into China country code', () => {
   expect(ISO_COUNTRIES.CHN).toBe('CN');
 });
 
-test('keeps China as the only country code for China geography metrics', () => {
+test('reports Taiwan separately from China in country metrics', () => {
   const metrics = percentFilter(
     mergeCountryMetrics([
       { x: ISO_COUNTRIES.CHN, y: 3 },
       { x: ISO_COUNTRIES.CHN, y: 7 },
-      { x: LEGACY_COUNTRY_CODE, y: 5 },
-      { x: 'JP', y: 10 },
+      { x: ISO_COUNTRIES.TWN, y: 2 },
+      { x: TAIWAN_ALPHA3_CODE, y: 3 },
+      { x: 'JP', y: 5 },
     ]),
   );
 
   expect(metrics).toEqual([
-    { x: 'CN', y: 15, z: 60 },
-    { x: 'JP', y: 10, z: 40 },
+    { x: 'CN', y: 10, z: 50 },
+    { x: 'TW', y: 5, z: 25 },
+    { x: 'JP', y: 5, z: 25 },
   ]);
 });

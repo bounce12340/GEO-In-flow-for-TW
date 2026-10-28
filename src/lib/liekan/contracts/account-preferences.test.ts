@@ -25,7 +25,9 @@ describe('bundled account country and timezone catalog', () => {
     expect(catalog.sources.find(source => source.file === 'zone1970.tab')).toBeDefined();
     expect(catalog.sources.every(source => /^[a-f0-9]{64}$/.test(source.sha256))).toBe(true);
     expect(accountCountryCodes.every(code => countryTimezoneChoices(code).length > 0)).toBe(true);
-    expect(countryTimezoneChoices('CN')).toEqual(['Asia/Shanghai', 'Asia/Urumqi', 'Asia/Taipei']);
+    expect(countryTimezoneChoices('CN')).toEqual(['Asia/Shanghai', 'Asia/Urumqi']);
+    expect(countryTimezoneChoices('TW')).toEqual(['Asia/Taipei']);
+    expect(catalog.countryCodeMappings).toEqual({});
     expect(countryTimezoneChoices('JP')).toEqual(['Asia/Tokyo']);
     expect(countryTimezoneChoices('US')).toContain('America/Los_Angeles');
     expect(countryTimezoneChoices('US')).toContain('America/New_York');
@@ -38,6 +40,7 @@ describe('bundled account country and timezone catalog', () => {
     ['IN', 'Asia/Calcutta', 'Asia/Kolkata'],
     ['NP', 'Asia/Katmandu', 'Asia/Kathmandu'],
     ['CN', 'PRC', 'Asia/Shanghai'],
+    ['TW', 'ROC', 'Asia/Taipei'],
     ['JP', 'Japan', 'Asia/Tokyo'],
     ['US', 'US/Eastern', 'America/New_York'],
     ['UA', 'Europe/Kiev', 'Europe/Kyiv'],
@@ -63,6 +66,8 @@ describe('bundled account country and timezone catalog', () => {
 
   it.each([
     ['CN', 'Asia/Tokyo'],
+    ['CN', 'Asia/Taipei'],
+    ['TW', 'Asia/Shanghai'],
     ['JP', 'Asia/Shanghai'],
     ['US', 'Europe/London'],
     ['GB', 'UTC'],

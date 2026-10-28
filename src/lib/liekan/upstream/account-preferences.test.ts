@@ -76,7 +76,7 @@ beforeEach(() => {
 
 it('GET returns the default without creating or confirming preferences', async () => {
   expect(await readAccountPreferences(request)).toEqual({
-    countryCode: 'CN',
+    countryCode: 'TW',
     timezone: 'Asia/Taipei',
     range: '0day',
     configured: false,
@@ -143,12 +143,13 @@ it('initializes once and preserves server values over later browser values', asy
 });
 
 it.each([
-  [{}, 'Asia/Taipei', null],
-  [{ timezone: 'invalid/zone', range: 'garbage' }, 'Asia/Taipei', null],
+  [{}, 'Asia/Taipei', 'TW'],
+  [{ timezone: 'invalid/zone', range: 'garbage' }, 'Asia/Taipei', 'TW'],
   [{ timezone: 'Asia/Shanghai', range: '24hour' }, 'Asia/Shanghai', 'CN'],
-  [{ timezone: 'Asia/Taipei', range: '24hour' }, 'Asia/Taipei', null],
+  [{ timezone: 'Asia/Taipei', range: '24hour' }, 'Asia/Taipei', 'TW'],
+  [{ timezone: 'Asia/Tokyo', range: '24hour' }, 'Asia/Tokyo', null],
 ])(
-  'initializes the Taipei/Today default or a browser zone from %s; only Shanghai implies CN',
+  'initializes the Taipei/Today default or a browser zone from %s; Taipei implies TW and Shanghai CN',
   async (input, timezone, countryCode) => {
     expect(await initializeAccountPreferences(request, input)).toMatchObject({
       countryCode,
