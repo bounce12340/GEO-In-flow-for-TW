@@ -209,10 +209,10 @@ export interface CrawlPurposeAnalysis {
     | {
         state: 'checked';
         disallowedHits: {
-      botId: string;
-      name: string;
-      path: string;
-      requests: number;
+          botId: string;
+          name: string;
+          path: string;
+          requests: number;
           rule: string;
           userTriggered: boolean;
         }[];
@@ -224,11 +224,14 @@ export interface CrawlPurposeAnalysis {
   correlation: {
     platformId: string;
     referralState: CrawlerAnalyzedPlatform['state'] | 'no_platform';
+    /** Landing pages were cut off, so an unlisted path has unknown, not zero, referral visits. */
+    landingPagesTruncated: boolean;
     rows: {
       path: string;
       userFetches: number;
+      /** `null` when referral visits are unknown: input missing, truncated or not reported. */
       referralVisits: number | null;
-      relation: 'both' | 'fetch_only' | 'referral_only';
+      relation: 'both' | 'fetch_only' | 'referral_only' | 'referral_unknown';
     }[];
   }[];
   pagesTruncated: boolean;
@@ -259,7 +262,8 @@ export function analyzeCrawlPurpose(input: {
     CrawlerAnalyzedPage,
     'botId' | 'name' | 'path' | 'humanPath' | 'requests' | 'status2xx'
   >[];
-  platforms: readonly Pick<CrawlerAnalyzedPlatform, 'platformId' | 'state' | 'landingPages'>[];
+  platforms: readonly (Pick<CrawlerAnalyzedPlatform, 'platformId' | 'state' | 'landingPages'> &
+    Partial<Pick<CrawlerAnalyzedPlatform, 'landingPagesTruncated'>>)[];
   pagesTruncated?: boolean;
   robotsText?: string | null;
   pageLimit?: number;
@@ -407,23 +411,33 @@ export function analyzeCrawlPurpose(input: {
           );
       const platform = input.platforms.find(row => row.platformId === platformId);
       const available = platform?.state === 'available';
+      const truncated = !!platform?.landingPagesTruncated;
       const visits = new Map<string, number | null>();
       if (platform) for (const row of platform.landingPages) visits.set(row.path, row.visits);
       const paths = new Set([...fetches.keys(), ...(available ? visits.keys() : [])]);
       const rows = [...paths]
         .map(path => {
           const userFetches = fetches.get(path) || 0;
-          const referralVisits = available ? (visits.get(path) ?? 0) : null;
+          const listed = visits.get(path);
+          const referralVisits = !available
+            ? null
+            : listed !== undefined
+              ? listed
+              : truncated
+                ? null
+                : 0;
           return {
             path,
             userFetches,
             referralVisits,
             relation:
-              userFetches && referralVisits
-                ? ('both' as const)
-                : userFetches
-                  ? ('fetch_only' as const)
-                  : ('referral_only' as const),
+              referralVisits == null
+                ? ('referral_unknown' as const)
+                : userFetches && referralVisits
+                  ? ('both' as const)
+                  : userFetches
+                    ? ('fetch_only' as const)
+                    : ('referral_only' as const),
           };
         })
         .sort(
@@ -436,6 +450,7 @@ export function analyzeCrawlPurpose(input: {
       return {
         platformId,
         referralState: platform ? platform.state : ('no_platform' as const),
+        landingPagesTruncated: truncated,
         rows,
       };
     })

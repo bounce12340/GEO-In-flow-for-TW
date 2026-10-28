@@ -100,17 +100,20 @@ it.each([
   ['zh-TW', '無法判斷：robots.txt 超過 512 KiB，超出解析上限。'],
   ['zh-CN', '无法判断：robots.txt 超过 512 KiB，超出解析上限。'],
   ['en-US', 'Cannot determine: robots.txt exceeds the 512 KiB parser limit.'],
-] as const)('keeps the tab usable when robots.txt exceeds the parser limit in %s', (locale, message) => {
-  view(locale, [
-    {
-      state: 'completed',
-      result: {
-        robots: { status: 200, body: `User-agent: *\n#${'x'.repeat(ROBOTS_PARSE_MAX_BYTES)}` },
+] as const)(
+  'keeps the tab usable when robots.txt exceeds the parser limit in %s',
+  (locale, message) => {
+    view(locale, [
+      {
+        state: 'completed',
+        result: {
+          robots: { status: 200, body: `User-agent: *\n#${'x'.repeat(ROBOTS_PARSE_MAX_BYTES)}` },
+        },
       },
-    },
-  ]);
-  expect(screen.getByText(message)).toBeInTheDocument();
-});
+    ]);
+    expect(screen.getByText(message)).toBeInTheDocument();
+  },
+);
 
 it('flags malformed robots lines instead of only reporting no disallowed hits', () => {
   view('zh-TW');
@@ -123,4 +126,36 @@ it('flags malformed robots lines instead of only reporting no disallowed hits', 
       'robots.txt 有 1 行格式無效（例如路徑未以 / 開頭），這些行未納入比對；未發現命中不代表已全部遵循。',
     ),
   ).toBeInTheDocument();
+});
+
+it('shows truncated AI referral landings as unknown rather than fetch-only', () => {
+  const truncated = {
+    ...data,
+    pages: [
+      ...data.pages,
+      {
+        botId: 'chatgpt-user',
+        name: 'ChatGPT-User',
+        path: '/faq',
+        humanPath: '/faq',
+        ...counts(1),
+      },
+    ],
+    platforms: [{ ...data.platforms[0], landingPagesTruncated: true }],
+  } as unknown as CrawlerAnalysisResponse;
+  render(
+    <LiekanLocaleContext.Provider value="zh-TW">
+      <CrawlPurposePanel data={truncated} checks={[]} />
+    </LiekanLocaleContext.Provider>,
+  );
+  expect(
+    screen.getByText('AI 引薦落地頁記錄已截斷，未列出頁面的引薦造訪顯示為未知，不計為 0。'),
+  ).toBeInTheDocument();
+  const row = screen
+    .getAllByText('/faq', { selector: 'td' })
+    .map(cell => cell.closest('tr') as HTMLElement)
+    .find(tr => within(tr).queryByText('ChatGPT-User') === null) as HTMLElement;
+  expect(within(row).getByText('引薦造訪未知')).toBeInTheDocument();
+  expect(within(row).getByText('未知')).toBeInTheDocument();
+  expect(within(row).queryByText('僅取得')).toBeNull();
 });

@@ -3,8 +3,8 @@ import { getCrawlerDirectory } from './directory';
 import {
   analyzeCrawlPurpose,
   contentTypeForPath,
-  crawlPurposeForEntry,
   crawlerRegion,
+  crawlPurposeForEntry,
   datasetExposureForEntry,
 } from './purpose';
 import { ROBOTS_PARSE_MAX_BYTES } from './robots';
@@ -138,5 +138,31 @@ describe('purpose analysis over an analysis snapshot', () => {
     }).correlation[0];
     expect(missing.referralState).toBe('missing');
     expect(missing.rows.every(row => row.referralVisits === null)).toBe(true);
+    expect(missing.rows.every(row => row.relation === 'referral_unknown')).toBe(true);
+  });
+  it('keeps truncated or unreported referral visits unknown instead of zero', () => {
+    const platform = {
+      ...base.platforms[0],
+      landingPagesTruncated: true,
+      landingPages: [
+        { path: '/guide', visits: 5, conversions: null, goalEvents: null },
+        { path: '/pricing', visits: null, conversions: null, goalEvents: null },
+      ],
+    };
+    const [openai] = analyzeCrawlPurpose({ ...base, platforms: [platform] }).correlation;
+    expect(openai.landingPagesTruncated).toBe(true);
+    expect(openai.rows).toEqual([
+      { path: '/guide', userFetches: 2, referralVisits: 5, relation: 'both' },
+      { path: '/private/b', userFetches: 1, referralVisits: null, relation: 'referral_unknown' },
+      { path: '/pricing', userFetches: 0, referralVisits: null, relation: 'referral_unknown' },
+    ]);
+    const complete = analyzeCrawlPurpose({
+      ...base,
+      platforms: [{ ...platform, landingPagesTruncated: false }],
+    }).correlation[0];
+    expect(complete.rows.find(row => row.path === '/private/b')).toMatchObject({
+      referralVisits: 0,
+      relation: 'fetch_only',
+    });
   });
 });

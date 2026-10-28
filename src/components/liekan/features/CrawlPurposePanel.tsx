@@ -4,8 +4,8 @@ import type { CrawlerAnalysisResponse } from '@/lib/liekan/contracts/crawler-ana
 import {
   analyzeCrawlPurpose,
   type ContentType,
-  type CrawlPurpose,
   type CrawlerRegion,
+  type CrawlPurpose,
   type DatasetExposure,
 } from '@/lib/liekan/crawlers/purpose';
 import { useLiekanI18n } from '@/lib/liekan/i18n/client';
@@ -57,7 +57,12 @@ const contentLabels: Record<ContentType, string> = {
   ai_policy: 'AI 政策文件',
   asset: '静态资源',
 };
-const relationLabels = { both: '两者皆有', fetch_only: '仅获取', referral_only: '仅引荐' };
+const relationLabels = {
+  both: '两者皆有',
+  fetch_only: '仅获取',
+  referral_only: '仅引荐',
+  referral_unknown: '引荐访问未知',
+};
 
 /** Reads robots.txt from the latest completed public check when that check stored its body. */
 function checkedRobots(checks: any[]): string | null {
@@ -263,6 +268,11 @@ export function CrawlPurposePanel({
           '同一期间内，同一平台的用户触发获取与 AI 引荐落地页出现在同一页面。这是共同出现，不代表因果；汇总数据无法判定先后顺序。',
         )}
       </p>
+      {result.correlation.some(platform => platform.landingPagesTruncated) && (
+        <Notice tone="amber">
+          {i18n.text('AI 引荐落地页记录已截断，未列出页面的引荐访问显示为未知，不计为 0。')}
+        </Notice>
+      )}
       <Table
         columns={['平台', '页面', '用户触发获取', 'AI 引荐访问', '关系']}
         numeric={[2, 3]}
@@ -272,7 +282,9 @@ export function CrawlPurposePanel({
             platform.platformId,
             row.path,
             num(row.userFetches),
-            num(row.referralVisits),
+            row.referralVisits == null && platform.referralState === 'available'
+              ? i18n.text('未知')
+              : num(row.referralVisits),
             i18n.text(relationLabels[row.relation]),
           ]),
         )}

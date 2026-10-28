@@ -4952,5 +4952,7 @@
   "m_40f1f5d14a7e": "Cannot determine: robots.txt exceeds the 512 KiB parser limit.",
   "m_5da802dce308": "Cannot determine: the robots.txt content could not be parsed.",
   "m_4fdb3427050b": "Malformed robots.txt lines: {v0} (for example, a path that does not start with /). They were not compared, so no hits does not mean every rule was followed.",
-  "m_17e588e1393d": "Recorded crawl paths exclude query strings, so rules that end with $ or contain query parameters are matched only approximately."
+  "m_17e588e1393d": "Recorded crawl paths exclude query strings, so rules that end with $ or contain query parameters are matched only approximately.",
+  "m_7ef0b4bf6451": "Referral visits unknown",
+  "m_2c49e6c27aba": "AI referral landing pages are truncated. Referral visits for unlisted pages are shown as unknown, not 0."
 }
