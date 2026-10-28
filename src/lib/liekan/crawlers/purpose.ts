@@ -90,6 +90,14 @@ const datasetExposure: Readonly<Record<string, DatasetExposure>> = Object.freeze
 
 /** Documented as acting on a user's behalf (browsing and taking actions), not a single fetch. */
 const agentBrowsingIds = new Set(['google-agent']);
+/** Catalog types without an entry here (for example a type added later) stay `unknown`. */
+const purposeByType: Readonly<Record<string, CrawlPurpose>> = Object.freeze({
+  training: 'training_crawl',
+  search: 'ai_search_index',
+  user: 'user_triggered_fetch',
+  traditional_search: 'traditional_search',
+  other: 'other',
+});
 
 export function crawlPurposeForEntry(
   entry: Pick<CrawlerDirectoryEntry, 'id' | 'type' | 'kind'> | null | undefined,
@@ -97,15 +105,7 @@ export function crawlPurposeForEntry(
   if (!entry) return 'unknown';
   if (entry.kind === 'signed_agent' || agentBrowsingIds.has(entry.id)) return 'agent_browsing';
   if (datasetExposure[entry.id] === 'open_dataset') return 'training_crawl';
-  return (
-    {
-      training: 'training_crawl',
-      search: 'ai_search_index',
-      user: 'user_triggered_fetch',
-      traditional_search: 'traditional_search',
-      other: 'other',
-    } as const
-  )[entry.type];
+  return purposeByType[entry.type] ?? 'unknown';
 }
 
 export function datasetExposureForEntry(

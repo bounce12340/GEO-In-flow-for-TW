@@ -35,6 +35,13 @@ describe('crawl purpose from the reviewed catalog', () => {
     expect(crawlPurposeForEntry({ id: 'x', type: 'user', kind: 'signed_agent' })).toBe(
       'agent_browsing',
     );
+    // A catalog type added later without a purpose mapping stays unknown instead of undefined.
+    const unmapped = {
+      id: 'x',
+      type: 'future_type',
+      kind: 'http_crawler',
+    } as unknown as Parameters<typeof crawlPurposeForEntry>[0];
+    expect(crawlPurposeForEntry(unmapped)).toBe('unknown');
   });
   it('marks crawlers whose output feeds open datasets', () => {
     expect(crawlPurposeForEntry(entry('ccbot'))).toBe('training_crawl');
