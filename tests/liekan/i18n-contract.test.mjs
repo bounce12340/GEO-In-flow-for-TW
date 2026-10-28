@@ -326,7 +326,7 @@ test('English route, snapshot and request guards refuse wrong views and empty st
   const route = { id: 'preferences', path: '/liekan/preferences', documentTitle: '偏好设置' };
   assert.throws(
     () =>
-      assertEnglishRouteIdentity(route, 'http://127.0.0.1:3302/login', 'Preferences | GEOInflow'),
+      assertEnglishRouteIdentity(route, 'http://127.0.0.1:3302/login', 'Preferences | GEOInflow TW'),
     /correct page route/,
   );
   assert.throws(
@@ -334,7 +334,7 @@ test('English route, snapshot and request guards refuse wrong views and empty st
       assertEnglishRouteIdentity(
         route,
         'http://127.0.0.1:3302/liekan/preferences',
-        'Wrong view | GEOInflow',
+        'Wrong view | GEOInflow TW',
       ),
     /document title/,
   );

@@ -1642,7 +1642,7 @@ export function FeatureAuthPage({ page }: { page: 'login' | 'login-2fa' | 'sso' 
           <Link prefetch={false} className="auth-brand" href="/">
             <img src={`${basePath}/liekan/features/logo.svg`} alt="" />
             <span className="brand-name" style={{ color: 'var(--ink)' }}>
-              {liekanProduct.name}
+              {liekanProduct.title}
               <span className="brand-caption">{liekanProduct.caption}</span>
             </span>
           </Link>
@@ -1656,7 +1656,7 @@ export function FeatureAuthPage({ page }: { page: 'login' | 'login-2fa' | 'sso' 
             <div className="auth-feature">
               {i18n.fragment('AI 引荐 · 传统搜索 · 内容转化', false, true)}
               <br />
-              {liekanProduct.name}
+              {liekanProduct.title}
             </div>
           </div>
           <small>{i18n.text('GEOInflow · MIT 开源')}</small>
@@ -1664,7 +1664,7 @@ export function FeatureAuthPage({ page }: { page: 'login' | 'login-2fa' | 'sso' 
         <main className="auth-main" id="main-content">
           <div className="auth-form">
             <Badge key="badge" tone="blue">
-              {liekanProduct.name}
+              {liekanProduct.title}
             </Badge>
             <h1>{i18n.system(title)}</h1>
             <p className="sub">{i18n.system(description)}</p>
@@ -1752,7 +1752,7 @@ export function FeatureAuthPage({ page }: { page: 'login' | 'login-2fa' | 'sso' 
               </>
             )}
             <div className="auth-bottom">
-              <span>{liekanProduct.name}</span>
+              <span>{liekanProduct.title}</span>
               <span>{i18n.text('使用当前实例账户')}</span>
             </div>
           </div>
@@ -2485,11 +2485,11 @@ function Preferences() {
               items={[
                 [
                   i18n.text('当前运行系统'),
-                  `${liekanProduct.name} v${liekanProduct.displayVersion}`,
+                  `${liekanProduct.title} v${liekanProduct.displayVersion}`,
                 ],
                 [
                   i18n.text('界面版本'),
-                  `${liekanProduct.name} UI v${liekanProduct.displayVersion}`,
+                  `${liekanProduct.title} UI v${liekanProduct.displayVersion}`,
                 ],
                 [i18n.text('许可'), 'MIT'],
               ]}

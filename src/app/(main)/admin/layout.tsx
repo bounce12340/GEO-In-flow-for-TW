@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { liekanProduct } from '@/lib/liekan/contracts/product';
 import { AdminLayout } from './AdminLayout';
 
 export default function ({ children }) {
@@ -11,7 +12,7 @@ export default function ({ children }) {
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Admin | GEOInflow',
-    default: 'Admin | GEOInflow',
+    template: `%s | Admin | ${liekanProduct.title}`,
+    default: `Admin | ${liekanProduct.title}`,
   },
 };

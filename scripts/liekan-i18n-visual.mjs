@@ -231,7 +231,7 @@ export function assertEnglishRouteIdentity(route, url, title) {
   );
   assert.equal(
     title,
-    label(route.documentTitle) + ' | GEOInflow',
+    label(route.documentTitle) + ' | GEOInflow TW',
     `${route.id}: correct English document title`,
   );
 }

@@ -9,7 +9,7 @@ const TEXT_SIZE = { sm: 'sm', md: 'base', lg: 'lg' } as const;
 export function ShareBranding({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const share = useShare();
   const logoDomain = share?.whiteLabel?.domainName;
-  const logoName = share?.whiteLabel?.displayName || liekanProduct.name;
+  const logoName = share?.whiteLabel?.displayName || liekanProduct.title;
   const logoImage =
     share?.whiteLabel?.logoUrl || `${process.env.basePath || ''}/liekan/features/logo.svg`;
   const height = LOGO_SIZE[size];

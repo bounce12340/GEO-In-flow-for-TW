@@ -980,7 +980,7 @@ try {
     assert.equal(await footer.count(), 1, `${name} product footer count`);
     assert.equal(
       await footer
-        .getByRole('link', { name: `${branding.name} ${branding.version}`, exact: true })
+        .getByRole('link', { name: `${branding.title} ${branding.version}`, exact: true })
         .count(),
       1,
     );

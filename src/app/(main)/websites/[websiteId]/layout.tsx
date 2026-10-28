@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { WebsiteLayout } from '@/app/(main)/websites/[websiteId]/WebsiteLayout';
+import { liekanProduct } from '@/lib/liekan/contracts/product';
 import { getWebsite } from '@/queries/prisma';
 
 export default async function ({
@@ -28,7 +29,7 @@ export default async function ({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | GEOInflow',
+    template: `%s | ${liekanProduct.title}`,
     default: 'Websites',
   },
 };

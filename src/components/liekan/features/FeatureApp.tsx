@@ -395,7 +395,7 @@ export function FeatureApp({
       ? family.label
       : current.id && /-editor$/.test(current.page)
         ? (page?.title || '').replace(/^创建/, '编辑')
-        : page?.title || liekanProduct.name;
+        : page?.title || liekanProduct.title;
   const pageKey = `${siteId || current.teamId || user.id}:${current.page}:${current.id || ''}`;
   const invalidRange = datePage && range.endAt - range.startAt > 1096 * 86400000;
   const readOnlyGlobalPage = !setup && ['websites'].includes(current.page);

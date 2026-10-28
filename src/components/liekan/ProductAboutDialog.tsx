@@ -39,7 +39,7 @@ export function ProductAboutDialog({ onClose }: { onClose: () => void }) {
           <img src={`${process.env.basePath || ''}/liekan/features/logo.svg`} alt="" />
           <span>
             <span className={styles.titleLine}>
-              <span>{liekanProduct.name}</span>
+              <span>{liekanProduct.title}</span>
               <span className={styles.version}>v{liekanProduct.displayVersion}</span>
             </span>
             <span className={styles.caption}>

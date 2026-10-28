@@ -431,7 +431,7 @@ export function Navigation({
         >
           <img src={`${process.env.basePath || ''}/liekan/features/logo.svg`} alt="" />
           <span>
-            {liekanProduct.name}
+            {liekanProduct.title}
             <small>{liekanProduct.caption}</small>
           </span>
         </Link>

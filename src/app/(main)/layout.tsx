@@ -13,7 +13,7 @@ export default function ({ children }) {
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${liekanProduct.name}`,
-    default: liekanProduct.name,
+    template: `%s | ${liekanProduct.title}`,
+    default: liekanProduct.title,
   },
 };
