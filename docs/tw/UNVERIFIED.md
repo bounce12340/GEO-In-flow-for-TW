@@ -15,7 +15,7 @@
 | `Daumoa`（Kakao） | 未驗證 | 官方 Daum FAQ 只使用 robots token `DAUM`，沒有 UA。 |
 | Naver `Yeti` 完整 UA | 部分驗證 | robots token 已驗證；完整 UA 字串所在官方頁面無法讀取。 |
 | HyperCLOVA X / Naver AI 爬蟲、Kakao Kanana | 查無 | 沒有官方文件記載獨立爬蟲。 |
-| xAI / Grok（`GrokBot`、`xAI-Grok` 等） | 未驗證 | 查無 xAI 官方文件，第三方說法互相矛盾。引薦網域 grok.com 已加入。 |
+| xAI / Grok（`GrokBot`、`xAI-Grok` 等） | 未驗證 | 查無 xAI 官方文件，第三方說法互相矛盾。引薦網域 grok.com 已審閱、**待併入**（尚未啟用，見 [crawlers.md](crawlers.md)）。 |
 | DeepSeek（`DeepSeekBot`） | 未驗證 | 查無官方文件。 |
 | 豆包、通義千問爬蟲 | 查無 | 查無官方爬蟲頁。 |
 | Cohere（`cohere-ai`、`cohere-training-data-crawler`） | 排除 | Cohere 官方說明目前不以 Cohere bot 爬取網頁訓練生成式 AI 基礎模型（https://docs.cohere.com/docs/cohere-web-crawlers）。 |
