@@ -7,7 +7,7 @@
 - 身份與識別規則：`src/lib/liekan/crawlers/registry.ts`（UA token = 身份名稱，依 token 邊界比對，不分大小寫）
 - 營運方說明、官方來源網址、robots 說明：`src/lib/liekan/crawlers/catalog-metadata.ts`
 - 地區、抓取目的、資料集曝光：`src/lib/liekan/crawlers/purpose.ts`
-- AI 引薦網域：`config/liekan/ai-platform-coverage.json`；台灣引薦來源：`src/lib/liekan/contracts/taiwan-sources.ts`
+- AI 引薦網域：`config/liekan/ai-platform-coverage.json`；台灣引薦來源（**待接入**）：`src/lib/liekan/contracts/taiwan-sources.ts`
 - 官方文件變動檢查：`pnpm liekan:crawlers:check-sources`（唯讀；待併入項目的文件網址在併入目錄後才納入檢查）
 
 目的分類：訓練抓取（training_crawl）、AI 搜尋索引（ai_search_index）、使用者即時觸發（user_triggered_fetch）、Agent 代理瀏覽（agent_browsing）、傳統搜尋（traditional_search）、其他（other）、無法判定（unknown）。說明見 [crawl-purpose.md](crawl-purpose.md)。
@@ -31,7 +31,7 @@ UA 只是請求自稱的身份。所有營運方文件都提醒 UA 可被偽造�
 | --- | --- | --- | --- | --- | --- |
 | LY Corporation（LINE，日本公司；台灣 LINE 服務使用） | LINE 搜尋 | **待併入** `Linespider` | `Linespider` | 傳統搜尋（官方未提及 AI） | https://help2.line.me/linesearchbot/web/pc?lang=en |
 
-台灣引薦來源（非 AI 助理；歸屬維持原本的「傳統搜尋 / 其他引薦」管道，僅加上來源標籤）：
+台灣引薦來源（**待接入**）：對照表與測試已建立，但尚未接入引薦歸屬或任何畫面，目前不會顯示來源標籤。這些來源不是 AI 助理；接入後歸屬仍維持原本的「傳統搜尋 / 其他引薦」管道，只另外加上來源標籤。
 
 | 來源 | 網域 | 類別 | 官方網址 |
 | --- | --- | --- | --- |

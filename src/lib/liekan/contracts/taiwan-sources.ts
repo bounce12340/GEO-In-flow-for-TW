@@ -2,6 +2,7 @@
  * Taiwan referral sources reviewed for GEOInflow TW on 2026-10-28. Each hostname was checked
  * against the operator's own site. These are portals, communities and messaging services, not AI
  * assistants, so attribution keeps its existing channel; this table only labels the source.
+ * Pending integration: referrer attribution and the source tables do not read it yet.
  */
 export type TaiwanSourceCategory =
   | 'search'
