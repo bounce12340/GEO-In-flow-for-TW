@@ -322,7 +322,7 @@ async function clickhouseQuery(
       ${filteredSessionsQuery},
       ${filteredRevenueQuery}
       select
-        ${getClickHouseCountrySQL('filtered_sessions.country')} as "name",
+        ${getClickHouseCountrySQL('filtered_sessions.country', 'filtered_sessions.region')} as "name",
         sum(filtered_revenue.revenue) as "value"
       from filtered_revenue
       inner join filtered_sessions
@@ -343,7 +343,7 @@ async function clickhouseQuery(
       ${filteredSessionsQuery},
       ${filteredRevenueQuery}
       select
-        ${getClickHouseCountrySQL('filtered_sessions.country')} as country,
+        ${getClickHouseCountrySQL('filtered_sessions.country', 'filtered_sessions.region')} as country,
         ${getClickHouseRegionSQL('filtered_sessions.country', 'filtered_sessions.region')} as "name",
         sum(filtered_revenue.revenue) as "value"
       from filtered_revenue

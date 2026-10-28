@@ -55,9 +55,7 @@ for (const file of ['zone.tab', 'zone1970.tab']) {
   for (const line of source[file].toString('utf8').split('\n')) {
     if (!line || line.startsWith('#')) continue;
     const [codes, , zone] = line.split('\t');
-    for (const sourceCode of codes.split(',')) {
-      // Reuse the project's existing country naming convention for Taiwan.
-      const code = sourceCode === 'TW' ? 'CN' : sourceCode;
+    for (const code of codes.split(',')) {
       assert(code in countries, `Country missing from project names: ${code}`);
       const equivalent = canonical(zone);
       if (!countries[code].some(value => canonical(value) === equivalent))
@@ -90,7 +88,7 @@ const result = {
     file,
     sha256: createHash('sha256').update(source[file]).digest('hex'),
   })),
-  countryCodeMappings: { TW: 'CN' },
+  countryCodeMappings: {},
   supplementalMappings,
   countries,
   zones: [...zones].sort(),

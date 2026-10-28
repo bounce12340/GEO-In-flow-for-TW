@@ -182,7 +182,7 @@ export async function readBrowserDetailFacts(
       daily: `WITH eb AS(SELECT to_char(bucket AT TIME ZONE $4,'${bin}') AS day,count(DISTINCT session_id)::int AS uv,sum(pageviews)::int AS pv FROM visit_pieces WHERE pageviews>0 GROUP BY 1),
        vb AS(SELECT to_char(started AT TIME ZONE $4,'${bin}') AS day,count(*)::int AS sessions,avg(duration)::float AS duration,count(*) FILTER(WHERE pv=1 AND NOT custom)::int AS bounces,count(*) FILTER(WHERE converted)::int AS conversions FROM visits GROUP BY 1)
        SELECT e.day,e.uv,e.pv,coalesce(v.sessions,0)::int AS sessions,v.duration,coalesce(v.bounces,0)::int AS bounces,coalesce(v.conversions,0)::int AS conversions FROM eb e LEFT JOIN vb v USING(day) ORDER BY e.day`,
-      geo: `SELECT ${getPostgresCountrySQL('v.country')} AS country,${getPostgresRegionSQL('v.country', 'v.region')} AS region,v.city,sum(v.duration)::float AS "durationTotal",count(v.duration)::int AS "durationSamples",${metrics} FROM visits v GROUP BY 1,2,3 ORDER BY sessions DESC,1,2,3`,
+      geo: `SELECT ${getPostgresCountrySQL('v.country', 'v.region')} AS country,${getPostgresRegionSQL('v.country', 'v.region')} AS region,v.city,sum(v.duration)::float AS "durationTotal",count(v.duration)::int AS "durationSamples",${metrics} FROM visits v GROUP BY 1,2,3 ORDER BY sessions DESC,1,2,3`,
       sources: `SELECT v.referrer,v."utmSource",v."utmMedium",v."utmCampaign",${metrics} FROM visits v GROUP BY 1,2,3,4 ORDER BY sessions DESC,1,2,3,4`,
       environment:
         'SELECT device,browser,os,count(*)::int AS sessions FROM visits GROUP BY 1,2,3 ORDER BY sessions DESC,1,2,3',

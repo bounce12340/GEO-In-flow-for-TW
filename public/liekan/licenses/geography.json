@@ -3,8 +3,8 @@
   "license": "CC-BY-4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
   "sourceUrl": "https://www.geonames.org/",
-  "version": "2026-10-11.1",
-  "changes": "筛选国内地域、审核简体中文名称、整理省份编码和城市别名",
+  "version": "2026-10-28.1",
+  "changes": "筛选国内地域、审核简体中文名称、整理省份编码和城市别名；台湾地名归入国家编码 TW（不设省份）",
   "sources": [
     {
       "url": "https://download.geonames.org/export/dump/CN.zip",

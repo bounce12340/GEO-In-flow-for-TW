@@ -8,7 +8,7 @@ import regions from '../../../../public/iso-3166-2.json' with { type: 'json' };
 import type { LiekanLocale } from '../i18n/locale';
 
 export const geographyDisplayRuleVersion = 'city-known-1';
-export const geographyVersion = `geo-${catalog.version}-rules-5-${geographyDisplayRuleVersion}`;
+export const geographyVersion = `geo-${catalog.version}-rules-6-${geographyDisplayRuleVersion}`;
 export const provinceDefinitions = catalog.provinces;
 export const cityDefinitions = catalog.cities;
 const citiesById = new Map(cityDefinitions.map(city => [city.id, city]));
@@ -22,7 +22,6 @@ const englishCityNames = new Map(
   ]),
 );
 const englishProvinceNames: Record<string, string> = {
-  'CN-71': 'Taiwan',
   'CN-91': 'Hong Kong',
   'CN-92': 'Macao',
 };
@@ -55,8 +54,10 @@ for (const city of cityDefinitions) {
 }
 
 export function geographyRegion(region?: string | null, country?: string | null) {
-  const prefix = region?.includes('-') ? normalizeCountryCode(region.trim().split('-')[0]) : null;
-  const cc = normalizeCountryCode(country?.trim());
+  const prefix = region?.includes('-')
+    ? normalizeCountryCode(region.trim().split('-')[0], region.trim())
+    : null;
+  const cc = normalizeCountryCode(country?.trim(), region?.trim());
   if (prefix && cc && prefix !== cc) return region.trim().toUpperCase();
   const normalized = normalizeRegionCode(region?.trim().toUpperCase(), country?.trim());
   return provinceCodes.get(normalized) || normalized || null;
@@ -98,7 +99,7 @@ export function regionName(
   if (
     region?.includes('-') &&
     country &&
-    normalizeCountryCode(region.split('-')[0]) !== normalizeCountryCode(country.trim())
+    normalizeCountryCode(region.split('-')[0]) !== normalizeCountryCode(country.trim(), code)
   )
     return region;
   const province = provinceDefinitions.find(p => p.code === region);
@@ -116,7 +117,7 @@ export function regionAliases(code?: string | null, country?: string | null) {
   if (
     region?.includes('-') &&
     country &&
-    normalizeCountryCode(region.split('-')[0]) !== normalizeCountryCode(country.trim())
+    normalizeCountryCode(region.split('-')[0]) !== normalizeCountryCode(country.trim(), code)
   )
     return [code, region].filter(Boolean);
   const p = provinceDefinitions.find(p => p.code === region);
@@ -169,7 +170,7 @@ export type GeographyDisplay = {
   cityId: number | null;
 };
 export function identifyCity(value: Geography) {
-  const country = normalizeCountryCode(value.country?.trim());
+  const country = normalizeCountryCode(value.country?.trim(), value.region?.trim());
   const region = geographyRegion(value.region, value.country);
   const catalogueCountry =
     country === 'CN' && region === 'CN-91'
@@ -278,9 +279,9 @@ export function geographyCoverage(rows: GeographyFact[], totalVisits: number): G
     total,
     count(row => !!identifyCity(row).city),
   );
-  const chinaVisits = count(row => normalizeCountryCode(row.country) === 'CN');
+  const chinaVisits = count(row => normalizeCountryCode(row.country, row.region) === 'CN');
   const chinaProvinceKnownVisits = count(
-    row => normalizeCountryCode(row.country) === 'CN' && knownChinaProvince(row.region),
+    row => normalizeCountryCode(row.country, row.region) === 'CN' && knownChinaProvince(row.region),
   );
   const percent = (a: number, b: number) => (b ? Math.round((a / b) * 10000) / 100 : null);
   return {

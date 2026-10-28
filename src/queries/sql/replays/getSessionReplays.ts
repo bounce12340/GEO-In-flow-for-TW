@@ -62,7 +62,7 @@ async function relationalQuery(websiteId: string, filters: QueryFilters, session
       env.browser,
       env.os,
       env.device,
-      ${getPostgresCountrySQL('CASE WHEN geo.present THEN geo.country ELSE session.country END')} as country,
+      ${getPostgresCountrySQL('CASE WHEN geo.present THEN geo.country ELSE session.country END', 'CASE WHEN geo.present THEN geo.region ELSE session.region END')} as country,
       CASE WHEN geo.present THEN geo.city ELSE session.city END as city,
       sum(sr.event_count) as "eventCount",
       count(sr.replay_id) as "chunkCount",
@@ -74,7 +74,7 @@ async function relationalQuery(websiteId: string, filters: QueryFilters, session
     join session on session.session_id = sr.session_id
       and session.website_id = sr.website_id
     LEFT JOIN LATERAL (
-      SELECT true AS present,g.liekan_country AS country,g.liekan_city AS city
+      SELECT true AS present,g.liekan_country AS country,g.liekan_region AS region,g.liekan_city AS city
       FROM liekan_geographic_website_event g
       WHERE g.website_id=sr.website_id AND g.session_id=sr.session_id AND g.visit_id=sr.visit_id
       ORDER BY g.created_at,g.event_id LIMIT 1
@@ -142,7 +142,7 @@ async function clickhouseQuery(websiteId: string, filters: QueryFilters, session
       website_event.browser,
       website_event.os,
       website_event.device,
-      ${getClickHouseCountrySQL('website_event.country')} as country,
+      website_event.country,
       website_event.city,
       sum(session_replay.event_count) as eventCount,
       count(session_replay.replay_id) as chunkCount,
@@ -152,7 +152,7 @@ async function clickhouseQuery(websiteId: string, filters: QueryFilters, session
       max(session_replay.created_at) as createdAt
     from session_replay
     join (
-      select distinct website_id, session_id, visit_id, browser, os, device, ${getClickHouseCountrySQL('country')} as country, city
+      select distinct website_id, session_id, visit_id, browser, os, device, ${getClickHouseCountrySQL('country', 'region')} as country, city
       from website_event
       ${cohortQuery}
       where website_id = {websiteId:UUID}

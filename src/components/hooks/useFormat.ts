@@ -33,8 +33,8 @@ export function useFormat() {
 
   const formatRegion = (value?: string): string => {
     const [country] = value?.split('-') || [];
-    const normalizedCountry = normalizeCountryCode(country);
-    const region = normalizeRegionCode(value, normalizedCountry);
+    const normalizedCountry = normalizeCountryCode(country, value);
+    const region = normalizeRegionCode(value, country);
     return getRegionName(region, normalizedCountry) || region;
   };
 

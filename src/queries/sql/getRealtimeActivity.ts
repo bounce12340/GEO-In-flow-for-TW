@@ -32,7 +32,7 @@ async function relationalQuery(websiteId: string, filters: QueryFilters) {
         session.browser as browser,
         session.os as os,
         session.device as device,
-        ${getPostgresCountrySQL('session.country')} as country,
+        ${getPostgresCountrySQL('session.country', 'session.region')} as country,
         website_event.url_path as "urlPath",
         website_event.referrer_domain as "referrerDomain",
         website_event.hostname
@@ -72,7 +72,7 @@ async function clickhouseQuery(
             browser,
             os,
             device,
-            ${getClickHouseCountrySQL('country')} as country,
+            ${getClickHouseCountrySQL('country', 'region')} as country,
             url_path as urlPath,
             referrer_domain as referrerDomain,
             hostname

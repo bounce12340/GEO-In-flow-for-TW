@@ -156,7 +156,7 @@ async function clickhouseQuery(
       group by session_id, visit_id
     ) as e using (session_id, visit_id)`
     : '';
-  const countryColumn = getClickHouseCountrySQL('website_event.country');
+  const countryColumn = getClickHouseCountrySQL('website_event.country', 'website_event.region');
 
   if (type === 'country') {
     column = countryColumn;

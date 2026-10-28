@@ -56,15 +56,16 @@ const query = sql => {
     .filter(Boolean)
     .map(line => JSON.parse(line));
 };
-const country = geography.getClickHouseCountrySQL('website_event.country');
+const country = geography.getClickHouseCountrySQL('website_event.country', 'website_event.region');
 const region = geography.getClickHouseRegionSQL('website_event.country', 'website_event.region');
 assert.deepEqual(
   query(
     `SELECT ${country} AS country, count() AS visits FROM website_event GROUP BY country ORDER BY country`,
   ),
   [
-    { country: 'CN', visits: 9 },
+    { country: 'CN', visits: 1 },
     { country: 'JP', visits: 1 },
+    { country: 'TW', visits: 8 },
     { country: null, visits: 1 },
   ],
 );
@@ -74,25 +75,45 @@ assert.deepEqual(
   ),
   [
     { country: 'CN', region: 'CN-11', visits: 1 },
-    { country: 'CN', region: 'CN-71', visits: 8 },
     { country: 'JP', region: 'JP-13', visits: 1 },
+    { country: 'TW', region: '', visits: 4 },
+    { country: 'TW', region: 'TW-HSZ', visits: 1 },
+    { country: 'TW', region: 'TW-TPE', visits: 2 },
+    { country: 'TW', region: null, visits: 1 },
     { country: null, region: null, visits: 1 },
   ],
 );
 assert.deepEqual(
   query(
-    `SELECT ${country} AS country, ${region} AS region,count() AS visits FROM website_event WHERE ${region} = 'CN-71' GROUP BY country,region`,
+    `SELECT ${country} AS country, ${region} AS region,count() AS visits FROM website_event WHERE ${region} = 'TW-TPE' GROUP BY country,region`,
   ),
-  [{ country: 'CN', region: 'CN-71', visits: 8 }],
+  [{ country: 'TW', region: 'TW-TPE', visits: 2 }],
 );
-const sessionCountry = geography.getClickHouseCountrySQL('argMax(website_event.country, 1)');
+const formerProvince = `[${geography
+  .getRegionFilterValues('CN-71')
+  .map(value => `'${value}'`)
+  .join(',')}]`;
+assert.deepEqual(
+  query(
+    `SELECT count() AS visits FROM website_event WHERE ${region} IN ${formerProvince} OR ${geography.getTaiwanRegionFilterSQL('website_event.country', 'website_event.region', code => `has(${formerProvince}, ${code})`)}`,
+  ),
+  [{ visits: 8 }],
+);
+const sessionCountry = geography.getClickHouseCountrySQL(
+  'argMax(website_event.country, 1)',
+  'argMax(website_event.region, 1)',
+);
 assert.deepEqual(
   query(`SELECT count() AS visits FROM website_event WHERE ${country} = 'CN'`),
-  [{ visits: 9 }],
+  [{ visits: 1 }],
+);
+assert.deepEqual(
+  query(`SELECT count() AS visits FROM website_event WHERE ${country} = 'TW'`),
+  [{ visits: 8 }],
 );
 assert.deepEqual(
   query(`SELECT count() AS visits FROM website_event WHERE positionCaseInsensitive(${region}, 'CN-SH') = 0 AND positionCaseInsensitive(coalesce(website_event.region,${region}), 'CN-SH') = 0`),
-  [{ visits: 10 }],
+  [{ visits: 9 }],
 );
 const sessionRegion = geography.getClickHouseRegionSQL(
   'argMax(website_event.country, 1)',
@@ -100,10 +121,10 @@ const sessionRegion = geography.getClickHouseRegionSQL(
 );
 assert.deepEqual(
   query(
-    `SELECT ${sessionCountry} AS country, ${sessionRegion} AS region FROM website_event WHERE website_event.country = 'TW'`,
+    `SELECT ${sessionCountry} AS country, ${sessionRegion} AS region FROM website_event WHERE website_event.region = 'CN-tpe'`,
   ),
-  [{ country: 'CN', region: 'CN-71' }],
+  [{ country: 'TW', region: 'TW-TPE' }],
 );
 console.log(
-  'ClickHouse country, province, alias and historical-filter checks passed (isolated synthetic data).',
+  'ClickHouse country, province, Taiwan, alias and historical-filter checks passed (isolated synthetic data).',
 );

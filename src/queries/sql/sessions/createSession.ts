@@ -8,7 +8,7 @@ const FUNCTION_NAME = 'createSession';
 
 export async function createSession(data: Prisma.SessionCreateInput) {
   const { writeRawQuery } = prisma;
-  const country = normalizeCountryCode(data.country);
+  const country = normalizeCountryCode(data.country, data.region);
   const normalizedData: Prisma.SessionCreateInput = {
     ...data,
     browser: truncateString(data.browser, FIELD_LENGTH.browser),

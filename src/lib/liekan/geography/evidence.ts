@@ -104,7 +104,8 @@ export function consistentFill(base: Geography | null, candidate: Geography | nu
   if (!candidate) return { location: base || {}, reason: 'no_candidate' };
   if (
     base?.country &&
-    normalizeCountryCode(base.country) !== normalizeCountryCode(candidate.country)
+    normalizeCountryCode(base.country, base.region) !==
+      normalizeCountryCode(candidate.country, candidate.region)
   )
     return { location: base, reason: 'country_conflict' };
   if (

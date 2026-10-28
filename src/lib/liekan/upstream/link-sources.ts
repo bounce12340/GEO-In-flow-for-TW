@@ -36,7 +36,7 @@ export async function linkSources(request: Request, id: string, input: unknown) 
   const db = process.env.CLICKHOUSE_URL ? clickhouse : prisma;
   const ctx: any = db.parseFilters({ ...filters, websiteId: id }, { joinSession: true });
   const pg = !process.env.CLICKHOUSE_URL;
-  const selected = `SELECT website_event.referrer_domain AS source,${pg ? getPostgresCountrySQL('session.country') : getClickHouseCountrySQL('website_event.country')} AS country,COUNT(*) AS clicks FROM website_event ${ctx.cohortQuery} ${ctx.excludeBounceQuery} ${pg ? ctx.joinSessionQuery : ''} WHERE website_event.website_id=${pg ? '{{websiteId::uuid}}' : '{websiteId:UUID}'} AND website_event.event_type=3 AND website_event.created_at BETWEEN ${pg ? '{{startDate}} AND {{endDate}}' : '{startDate:DateTime64} AND {endDate:DateTime64}'} ${ctx.filterQuery} GROUP BY 1,2`;
+  const selected = `SELECT website_event.referrer_domain AS source,${pg ? getPostgresCountrySQL('session.country', 'session.region') : getClickHouseCountrySQL('website_event.country', 'website_event.region')} AS country,COUNT(*) AS clicks FROM website_event ${ctx.cohortQuery} ${ctx.excludeBounceQuery} ${pg ? ctx.joinSessionQuery : ''} WHERE website_event.website_id=${pg ? '{{websiteId::uuid}}' : '{websiteId:UUID}'} AND website_event.event_type=3 AND website_event.created_at BETWEEN ${pg ? '{{startDate}} AND {{endDate}}' : '{startDate:DateTime64} AND {endDate:DateTime64}'} ${ctx.filterQuery} GROUP BY 1,2`;
   const params = { ...ctx.queryParams, offset: (p.page - 1) * 25 };
   const [total, rows] = await Promise.all([
     db.rawQuery(`SELECT COUNT(*) AS count FROM (${selected}) t`, params, 'liekanLinkSourcesCount'),

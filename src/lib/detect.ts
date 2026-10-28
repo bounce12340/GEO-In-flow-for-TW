@@ -156,11 +156,11 @@ export async function getLocation(
       const countryHeader = headers.get(provider.countryHeader);
       if (countryHeader) {
         const sourceCountry = decodeHeader(countryHeader);
-        const normalizedCountry = normalizeCountryCode(sourceCountry);
+        const region = decodeHeader(headers.get(provider.regionHeader));
+        const normalizedCountry = normalizeCountryCode(sourceCountry, providerText(region));
         const country = isCountryCode(normalizedCountry) ? normalizedCountry : undefined;
         if (!country) continue;
         if (trace) trace.usedHeader = true;
-        const region = decodeHeader(headers.get(provider.regionHeader));
         const city = providerText(decodeHeader(headers.get(provider.cityHeader)));
 
         const header = { country, region: getRegionCode(sourceCountry, region), city };
@@ -271,7 +271,7 @@ function databaseLocation(result: any) {
   )
     throw new Error('invalid-geography-fields');
   return {
-    country: normalizeCountryCode(sourceCountry),
+    country: normalizeCountryCode(sourceCountry, region),
     region: getRegionCode(sourceCountry, region),
     city: providerText(city) ?? undefined,
   };
@@ -363,8 +363,8 @@ export async function getClientInfo(
     !!payload?.ip && ipEvidence.source !== 'trusted_ingress',
   );
   const location = geographyEvidence.location;
-  const country = normalizeCountryCode(location?.country);
-  const region = normalizeRegionCode(location?.region, country);
+  const country = normalizeCountryCode(location?.country, location?.region);
+  const region = normalizeRegionCode(location?.region, location?.country);
   const city = location?.city;
   const browser = payload?.browser ?? browserName(userAgent);
   const os = payload?.os ?? (detectOS(userAgent) as string);

@@ -92,10 +92,15 @@ export async function initializeAccountPreferences(request: Request, input: unkn
   const timezone = validateTimezone(parsed.data.timezone)
     ? parsed.data.timezone
     : ACCOUNT_DEFAULT_TIMEZONE;
-  // Only the original Shanghai default implies a catalog country; other zones, including the
-  // GEOInflow TW default Asia/Taipei, start without one until the user confirms a country.
+  // Only the Taipei and Shanghai zones imply a catalog country; other zones start without one
+  // until the user confirms a country.
+  const canonical = canonicalAccountTimezone(timezone);
   const countryCode =
-    canonicalAccountTimezone(timezone) === canonicalAccountTimezone('Asia/Shanghai') ? 'CN' : null;
+    canonical === canonicalAccountTimezone('Asia/Taipei')
+      ? 'TW'
+      : canonical === canonicalAccountTimezone('Asia/Shanghai')
+        ? 'CN'
+        : null;
   const range = normalizeAccountDateRange(parsed.data.range);
   return accountTransaction(request, async (tx, userId) => {
     await tx.$executeRawUnsafe(

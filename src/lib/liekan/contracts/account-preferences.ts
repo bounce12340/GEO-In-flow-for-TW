@@ -117,7 +117,7 @@ export type InitializeAccountPreferences = z.infer<typeof initializeAccountPrefe
 export type SaveAccountPreferences = z.infer<typeof saveAccountPreferencesSchema>;
 
 export const defaultAccountPreferences: AccountPreferences = {
-  countryCode: 'CN',
+  countryCode: 'TW',
   timezone: ACCOUNT_DEFAULT_TIMEZONE,
   range: ACCOUNT_DEFAULT_RANGE,
   configured: false,

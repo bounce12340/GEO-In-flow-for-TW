@@ -14,7 +14,7 @@ assert.equal(
 assert.equal(catalog.version, manifest.version);
 assert.equal(catalog.cities.length, manifest.cities);
 assert.equal(catalog.license, 'CC-BY-4.0');
-assert.equal(catalog.provinces.length, 34);
+assert.equal(catalog.provinces.length, 33);
 const provinceCodes = new Set(catalog.provinces.map(row => row.code));
 const fips = new Set();
 for (const province of catalog.provinces) {
@@ -31,7 +31,8 @@ for (const city of catalog.cities) {
   assert(Number.isInteger(city.id) && city.id > 0 && !ids.has(city.id));
   ids.add(city.id);
   assert.match(city.name, /^[\u3400-\u9fff]+$/);
-  assert(['CN', 'HK', 'MO'].includes(city.country));
+  assert(['CN', 'HK', 'MO', 'TW'].includes(city.country));
+  assert(city.country === 'CN' || city.region === null);
   assert(city.country !== 'CN' || provinceCodes.has(city.region));
   assert(city.aliases.includes(city.name));
   for (const alias of new Set(

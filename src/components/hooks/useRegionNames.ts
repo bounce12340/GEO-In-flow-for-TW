@@ -26,8 +26,8 @@ export function useRegionNames(locale: string) {
 
     if (!countryCode) {
       const [country] = regionCode.split('-');
-      const normalizedCountry = normalizeCountryCode(country);
-      const region = normalizeRegionCode(regionCode, normalizedCountry);
+      const normalizedCountry = normalizeCountryCode(country, regionCode);
+      const region = normalizeRegionCode(regionCode, country);
       const regionName = regionNames[region];
 
       return regionName && normalizedCountry
@@ -35,8 +35,8 @@ export function useRegionNames(locale: string) {
         : regionName || region;
     }
 
-    const country = normalizeCountryCode(countryCode);
-    const region = normalizeRegionCode(regionCode, country);
+    const country = normalizeCountryCode(countryCode, regionCode);
+    const region = normalizeRegionCode(regionCode, countryCode);
     const regionName = regionNames[region];
 
     return regionName ? `${regionName}, ${countryNames[country]}` : region;
