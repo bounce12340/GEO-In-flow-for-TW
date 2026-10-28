@@ -34,7 +34,7 @@ sh scripts/liekan-deploy.sh
 
 ## 5. 看懂 AI 來訪
 
-1. 網站分析 → AI 蜘蛛歸因與控制 → **抓取目的**：各 AI 的來訪目的、地區與官方文件。
+1. 網站分析 → AI 蜘蛛歸因與控制 → **抓取目的**：各 AI 的來訪目的、地區與來源。
 2. 在「robots.txt 遵循檢查」貼上目前的 robots.txt，查看是否有爬蟲抓取禁止路徑。
 3. 對照「使用者觸發獲取與 AI 引薦造訪」，找出使用者在 ChatGPT、Perplexity、Claude 等讀過、之後也帶來造訪的頁面。
 4. 依 [開放資料集曝光檢查](open-dataset-exposure.md) 決定是否提供內容給開源模型訓練。

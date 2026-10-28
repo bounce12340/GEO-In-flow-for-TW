@@ -74,6 +74,23 @@ function checkedRobots(checks: any[]): string | null {
   return null;
 }
 
+/** Links http(s) catalog sources by hostname; an invalid URL stays visible as plain text. */
+function sourceLink(url: string | null) {
+  if (!url) return '–';
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return url;
+  }
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return url;
+  return (
+    <a key="source" href={parsed.href} target="_blank" rel="noreferrer noopener">
+      {parsed.hostname}
+    </a>
+  );
+}
+
 export function CrawlPurposePanel({
   data,
   checks,
@@ -136,7 +153,7 @@ export function CrawlPurposePanel({
       />
       <h3>{i18n.text('各身份目的与来源')}</h3>
       <Table
-        columns={['蜘蛛', '地区', '目的', '开放数据集', '请求数', '官方文档']}
+        columns={['蜘蛛', '地区', '目的', '开放数据集', '请求数', '来源']}
         numeric={[4]}
         static={[5]}
         search
@@ -152,18 +169,7 @@ export function CrawlPurposePanel({
             </Badge>
           ),
           num(bot.requests),
-          bot.documentationUrl ? (
-            <a
-              key="documentation"
-              href={bot.documentationUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {new URL(bot.documentationUrl).hostname}
-            </a>
-          ) : (
-            '–'
-          ),
+          sourceLink(bot.documentationUrl),
         ])}
       />
       <h3>{i18n.text('内容类型与目的')}</h3>

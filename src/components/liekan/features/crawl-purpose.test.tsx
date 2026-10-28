@@ -159,3 +159,28 @@ it('shows truncated AI referral landings as unknown rather than fetch-only', () 
   expect(within(row).getByText('未知')).toBeInTheDocument();
   expect(within(row).queryByText('僅取得')).toBeNull();
 });
+
+it.each([
+  ['zh-TW', '來源'],
+  ['en-US', 'Source'],
+] as const)(
+  'labels catalog sources neutrally and tolerates invalid source URLs in %s',
+  (locale, header) => {
+    const invalid = {
+      ...data,
+      directory: data.directory.map(entry =>
+        entry.id === 'ccbot' ? { ...entry, documentationUrl: 'not a url' } : entry,
+      ),
+    } as CrawlerAnalysisResponse;
+    render(
+      <LiekanLocaleContext.Provider value={locale}>
+        <CrawlPurposePanel data={invalid} checks={[]} />
+      </LiekanLocaleContext.Provider>,
+    );
+    expect(screen.getByRole('columnheader', { name: header })).toBeInTheDocument();
+    expect(screen.queryByText('官方文件')).toBeNull();
+    expect(screen.getByText('not a url')).toBeInTheDocument();
+    for (const link of screen.getAllByRole('link', { name: 'developers.openai.com' }))
+      expect(link.getAttribute('href')).toMatch(/^https:\/\/developers\.openai\.com\//);
+  },
+);
