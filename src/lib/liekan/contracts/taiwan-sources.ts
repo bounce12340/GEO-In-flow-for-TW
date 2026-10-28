@@ -85,9 +85,10 @@ export const taiwanReferralSources: readonly TaiwanReferralSource[] = Object.fre
     sourceUrl: 'https://www.ptt.cc/',
   },
   {
+    // Operator per https://www.oneup.com.tw/log.html: 旺普網路資訊 was founded on 2000-02-24 to run 巴哈姆特.
     id: 'gamer',
     name: '巴哈姆特電玩資訊站',
-    operator: 'Gamania Digital',
+    operator: 'Oneup Network Corporation（旺普網路資訊股份有限公司）',
     category: 'community',
     hosts: ['gamer.com.tw'],
     sourceUrl: 'https://www.gamer.com.tw/',

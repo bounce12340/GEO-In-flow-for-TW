@@ -45,6 +45,8 @@ UA 只是請求自稱的身份。所有營運方文件都提醒 UA 可被偽造�
 | PTT 批踢踢實業坊 | ptt.cc | 社群 | https://www.ptt.cc/ |
 | 巴哈姆特電玩資訊站 | gamer.com.tw | 社群 | https://www.gamer.com.tw/ |
 
+巴哈姆特的營運方是旺普網路資訊股份有限公司（Oneup Network Corporation）。依其公司沿革（https://www.oneup.com.tw/log.html），旺普網路資訊於 2000-02-24 成立，以經營「巴哈姆特」為主要營業內容。
+
 Yahoo 全球說明頁表示 Yahoo 搜尋結果來自 Slurp 與 Bing 的爬蟲（https://help.yahoo.com/kb/SLN2213.html）。Yahoo奇摩搜尋（台灣）沒有找到官方的同類聲明。
 
 ## 全球 / 美國（預設優先顯示）

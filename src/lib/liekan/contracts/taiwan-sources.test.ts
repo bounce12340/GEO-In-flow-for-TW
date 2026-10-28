@@ -1,11 +1,11 @@
 import { expect, it } from 'vitest';
+import { classifyEntrySource, referralForHost } from './sources';
 import {
   chineseScriptForLanguageTag,
   isTaiwanDomain,
   taiwanReferralSources,
   taiwanSourceForHost,
 } from './taiwan-sources';
-import { classifyEntrySource, referralForHost } from './sources';
 
 it('labels reviewed Taiwan referral hosts with the most specific match', () => {
   expect(taiwanSourceForHost('tw.search.yahoo.com')?.id).toBe('yahoo-tw-search');
@@ -14,6 +14,7 @@ it('labels reviewed Taiwan referral hosts with the most specific match', () => {
   expect(taiwanSourceForHost('www.line.me')?.id).toBe('line');
   expect(taiwanSourceForHost('www.dcard.tw')?.id).toBe('dcard');
   expect(taiwanSourceForHost('forum.gamer.com.tw')?.id).toBe('gamer');
+  expect(taiwanSourceForHost('www.gamer.com.tw')?.operator).toContain('旺普網路資訊股份有限公司');
   expect(taiwanSourceForHost('notptt.cc')).toBeUndefined();
   for (const source of taiwanReferralSources)
     expect(new URL(source.sourceUrl).protocol).toBe('https:');
