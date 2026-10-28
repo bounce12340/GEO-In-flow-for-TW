@@ -4,7 +4,12 @@ import type {
   CrawlerAnalyzedPlatform,
 } from '../contracts/crawler-analysis';
 import type { CrawlerDirectoryEntry } from './directory';
-import { checkRobotsAccess, parseRobots, type RobotsDocument } from './robots';
+import {
+  checkRobotsAccess,
+  parseRobots,
+  ROBOTS_PARSE_MAX_BYTES,
+  type RobotsDocument,
+} from './robots';
 
 /**
  * "Why did this AI come?" Purpose is read from the reviewed catalog entry of the identity that
@@ -195,20 +200,27 @@ export interface CrawlPurposeAnalysis {
     path: (typeof aiPolicyFiles)[number];
     bots: { botId: string | null; name: string; requests: number; successful: number }[];
   }[];
-  /** `null` when no robots.txt text is available for comparison. */
-  robots: {
-    disallowedHits: {
+  /**
+   * `null` when no robots.txt text is available for comparison; `unavailable` when the supplied
+   * text cannot be parsed (for example above the 512 KiB parser limit), so no verdict is given.
+   */
+  robots:
+    | { state: 'unavailable'; reason: 'too_large' | 'unreadable' }
+    | {
+        state: 'checked';
+        disallowedHits: {
       botId: string;
       name: string;
       path: string;
       requests: number;
-      rule: string;
-      userTriggered: boolean;
-    }[];
-    checkedPages: number;
-    skippedPages: number;
-    issues: number;
-  } | null;
+          rule: string;
+          userTriggered: boolean;
+        }[];
+        checkedPages: number;
+        skippedPages: number;
+        issues: number;
+      }
+    | null;
   correlation: {
     platformId: string;
     referralState: CrawlerAnalyzedPlatform['state'] | 'no_platform';
@@ -224,6 +236,17 @@ export interface CrawlPurposeAnalysis {
 
 const pagePath = (page: Pick<CrawlerAnalyzedPage, 'path' | 'humanPath'>) =>
   page.humanPath || page.path;
+
+/** The parser throws above its byte limit; the analysis runs during render, so it must not. */
+function readRobots(text: string): RobotsDocument | 'too_large' | 'unreadable' {
+  try {
+    return parseRobots(text);
+  } catch {
+    return new TextEncoder().encode(text).length > ROBOTS_PARSE_MAX_BYTES
+      ? 'too_large'
+      : 'unreadable';
+  }
+}
 
 /**
  * Pure summary over an existing crawler-analysis snapshot. Inputs are the same rows the analysis
@@ -319,9 +342,13 @@ export function analyzeCrawlPurpose(input: {
   }));
 
   let robots: CrawlPurposeAnalysis['robots'] = null;
-  if (input.robotsText?.trim()) {
-    const document: RobotsDocument = parseRobots(input.robotsText);
-    const disallowedHits: NonNullable<CrawlPurposeAnalysis['robots']>['disallowedHits'] = [];
+  const document = input.robotsText?.trim() ? readRobots(input.robotsText) : null;
+  if (typeof document === 'string') robots = { state: 'unavailable', reason: document };
+  else if (document) {
+    const disallowedHits: Extract<
+      NonNullable<CrawlPurposeAnalysis['robots']>,
+      { state: 'checked' }
+    >['disallowedHits'] = [];
     let checkedPages = 0,
       skippedPages = 0;
     for (const page of input.pages) {
@@ -349,6 +376,7 @@ export function analyzeCrawlPurpose(input: {
         });
     }
     robots = {
+      state: 'checked',
       disallowedHits: disallowedHits.sort((a, b) => b.requests - a.requests),
       checkedPages,
       skippedPages,

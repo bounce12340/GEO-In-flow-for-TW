@@ -4948,5 +4948,7 @@
   "m_5d9263936137": "User-triggered fetches and AI referral visits",
   "m_62907b5504f6": "Within the same period, user-triggered fetches and AI referral landings from the same platform hit the same page. This is co-occurrence, not causation; aggregated data cannot establish order.",
   "m_20b3844c07ec": "User-triggered fetches",
-  "m_253aaff19a39": "Relation"
+  "m_253aaff19a39": "Relation",
+  "m_40f1f5d14a7e": "Cannot determine: robots.txt exceeds the 512 KiB parser limit.",
+  "m_5da802dce308": "Cannot determine: the robots.txt content could not be parsed."
 }

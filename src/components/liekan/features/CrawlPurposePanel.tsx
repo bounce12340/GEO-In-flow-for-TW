@@ -213,6 +213,12 @@ export function CrawlPurposePanel({
       )}
       {!result.robots ? (
         <Notice tone="amber">{i18n.text('尚未提供 robots.txt，无法判断是否抓取禁止路径。')}</Notice>
+      ) : result.robots.state === 'unavailable' ? (
+        <Notice tone="amber">
+          {result.robots.reason === 'too_large'
+            ? i18n.text('无法判断：robots.txt 超过 512 KiB，超出解析上限。')
+            : i18n.text('无法判断：无法解析 robots.txt 内容。')}
+        </Notice>
       ) : (
         <>
           <p className="muted">

@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 import type { CrawlerAnalysisResponse } from '@/lib/liekan/contracts/crawler-analysis';
 import { getCrawlerDirectory } from '@/lib/liekan/crawlers/directory';
+import { ROBOTS_PARSE_MAX_BYTES } from '@/lib/liekan/crawlers/robots';
 import { LiekanLocaleContext } from '@/lib/liekan/i18n/client';
 import type { LiekanLocale } from '@/lib/liekan/i18n/locale';
 import { CrawlPurposePanel } from './CrawlPurposePanel';
@@ -90,4 +91,20 @@ it.each([
   expect(badgeIn('GPTBot', operator)).toBe(true);
   expect(screen.queryByText('开放数据集')).toBeNull();
   expect(screen.queryByText('运营方模型训练')).toBeNull();
+});
+
+it.each([
+  ['zh-TW', '無法判斷：robots.txt 超過 512 KiB，超出解析上限。'],
+  ['zh-CN', '无法判断：robots.txt 超过 512 KiB，超出解析上限。'],
+  ['en-US', 'Cannot determine: robots.txt exceeds the 512 KiB parser limit.'],
+] as const)('keeps the tab usable when robots.txt exceeds the parser limit in %s', (locale, message) => {
+  view(locale, [
+    {
+      state: 'completed',
+      result: {
+        robots: { status: 200, body: `User-agent: *\n#${'x'.repeat(ROBOTS_PARSE_MAX_BYTES)}` },
+      },
+    },
+  ]);
+  expect(screen.getByText(message)).toBeInTheDocument();
 });

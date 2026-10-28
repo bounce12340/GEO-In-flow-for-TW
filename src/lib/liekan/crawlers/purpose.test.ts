@@ -7,6 +7,7 @@ import {
   crawlerRegion,
   datasetExposureForEntry,
 } from './purpose';
+import { ROBOTS_PARSE_MAX_BYTES } from './robots';
 
 const directory = getCrawlerDirectory();
 const entry = (id: string) => {
@@ -107,11 +108,21 @@ describe('purpose analysis over an analysis snapshot', () => {
       ...base,
       robotsText: 'User-agent: GPTBot\nDisallow: /private/\n\nUser-agent: *\nDisallow: /private/b',
     });
-    expect(result.robots?.disallowedHits).toEqual([
-      expect.objectContaining({ botId: 'gptbot', path: '/private/a', requests: 4 }),
-      expect.objectContaining({ botId: 'chatgpt-user', path: '/private/b', userTriggered: true }),
-    ]);
-    expect(result.robots?.skippedPages).toBe(1);
+    expect(result.robots).toMatchObject({
+      state: 'checked',
+      disallowedHits: [
+        expect.objectContaining({ botId: 'gptbot', path: '/private/a', requests: 4 }),
+        expect.objectContaining({ botId: 'chatgpt-user', path: '/private/b', userTriggered: true }),
+      ],
+      skippedPages: 1,
+    });
+  });
+  it('returns an unavailable robots state instead of throwing above the parser limit', () => {
+    const robotsText = `User-agent: *\nDisallow: /private/\n#${'x'.repeat(ROBOTS_PARSE_MAX_BYTES)}`;
+    expect(() => analyzeCrawlPurpose({ ...base, robotsText })).not.toThrow();
+    const result = analyzeCrawlPurpose({ ...base, robotsText });
+    expect(result.robots).toEqual({ state: 'unavailable', reason: 'too_large' });
+    expect(result.purposes.length).toBeGreaterThan(0);
   });
   it('relates user-triggered fetches and AI referral landings without implying causation', () => {
     const [openai] = analyzeCrawlPurpose(base).correlation;
