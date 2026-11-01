@@ -8,6 +8,7 @@ import { getItem } from '@/lib/storage';
 import { setLocale, useApp } from '@/store/app';
 import enUS from '../../../public/intl/messages/en-US.json';
 import zhCN from '../../../public/intl/messages/zh-CN.json';
+import zhTW from '../../../public/intl/messages/zh-TW.json';
 import {
   isLiekanLocale,
   localeCookie,
@@ -17,9 +18,10 @@ import {
 } from '@/lib/liekan/i18n/locale';
 import { useForceUpdate } from './useForceUpdate';
 
-const messages: Record<string, typeof enUS | typeof zhCN> = {
+const messages: Record<string, typeof enUS | typeof zhCN | typeof zhTW> = {
   'en-US': enUS,
   'zh-CN': zhCN,
+  'zh-TW': zhTW,
 };
 const pending = new Map<string, Promise<void>>();
 

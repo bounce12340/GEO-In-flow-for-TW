@@ -103,7 +103,7 @@ export function LoginTwoFactorPage() {
           }}
         />
       </Icon>
-      <Heading>{liekanProduct.name}</Heading>
+      <Heading>{liekanProduct.title}</Heading>
       <Column gap="4" style={{ minWidth: 300 }}>
         <Heading size="xl">{t(labels.twoFactorLogin)}</Heading>
         <Text>{t(messages.twoFactorLoginDescription)}</Text>

@@ -14,7 +14,7 @@ import { getItem } from '@/lib/storage';
 const initialState = {
   locale: getItem(LOCALE_CONFIG) || process.env.defaultLocale || DEFAULT_LOCALE,
   theme: getItem(THEME_CONFIG) || DEFAULT_THEME,
-  timezone: getItem(TIMEZONE_CONFIG) || 'Asia/Shanghai',
+  timezone: getItem(TIMEZONE_CONFIG) || 'Asia/Taipei',
   dateRangeValue: getItem(DATE_RANGE_CONFIG) || DEFAULT_DATE_RANGE_VALUE,
   accountPreferences: null as AccountPreferences | null,
   share: null,

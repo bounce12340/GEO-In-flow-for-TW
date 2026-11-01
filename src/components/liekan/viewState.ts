@@ -90,12 +90,12 @@ export function readViewState(params: Record<string, string>, resource: Resource
     tablePages: resource === 'logs' ? {} : readTablePages(params),
   };
 }
-export function previousWeekRange(startAt: number, endAt: number, timezone = 'Asia/Shanghai') {
+export function previousWeekRange(startAt: number, endAt: number, timezone = 'Asia/Taipei') {
   return shiftCalendarRange(startAt, endAt, -7, timezone);
 }
 export function isLiveLogView(params: Record<string, string>, resource: Resource) {
   return resource === 'logs' && params.live === '1';
 }
-export function defaultDateRange(now: number, timezone = 'Asia/Shanghai') {
+export function defaultDateRange(now: number, timezone = 'Asia/Taipei') {
   return calendarDayRange(now, timezone);
 }

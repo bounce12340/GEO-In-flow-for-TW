@@ -45,10 +45,14 @@ test.each([
 test('selects English display by stable IDs and keeps uncertain or missing geography explicit', () => {
   const value = { country: 'CN', region: 'CN-SN', city: '西安' };
   const identity = identifyCity(value);
-  expect(countryName('TW', 'en-US')).toBe('China');
+  expect(countryName('TW', 'en-US')).toBe('Taiwan');
+  expect(countryName('CN', 'en-US')).toBe('China');
   expect(regionName('CN-SN', 'CN', 'en-US')).toBe('Shaanxi');
   expect(regionName('CN-SX', 'CN', 'en-US')).toBe('Shanxi');
-  expect(regionName('TW-TPE', 'TW', 'en-US')).toBe('Taiwan');
+  expect(regionName('TW-TPE', 'TW', 'en-US')).toBe('TW-TPE');
+  expect(visitorGeographyLabel({ country: 'CN', region: 'CN-TPE', city: 'Taipei' }, 'en-US')).toBe(
+    'Taipei, TW-TPE, Taiwan',
+  );
   expect(regionName('CN-SD', 'US', 'en-US')).toBe('CN-SD');
   expect(geographyLabel(value, 'en-US')).toBe("Xi'an");
   expect(geographyLabel({ ...geographyDisplay(value), city: null }, 'en-US')).toBe("Xi'an");
@@ -177,6 +181,16 @@ test('keeps same-spelling options explicit and accepts traditional city aliases'
     { value: 'Suzhou', country: 'CN', region: 'CN-AH', count: 1 },
   ]);
   expect(options).toEqual([{ value: 'Suzhou', count: 4, label: '苏州 / 宿州' }]);
+  expect(
+    cityValueOptions(
+      [
+        { value: 'Suzhou', country: 'CN', region: 'CN-JS', count: 3 },
+        { value: 'Suzhou', country: 'CN', region: 'CN-AH', count: 1 },
+      ],
+      true,
+      'zh-TW',
+    ),
+  ).toEqual([{ value: 'Suzhou', count: 4, label: '蘇州 / 宿州' }]);
   expect(cityValueOptions([{ value: 'Jinan', count: 2 }], false)[0].label).toBe('Jinan');
   expect(geographyLabel({ country: 'CN', region: 'CN-JS', city: 'Taizhou' })).toBe('泰州');
   expect(geographyLabel({ country: 'CN', region: 'CN-ZJ', city: 'Taizhou' })).toBe('台州');

@@ -97,7 +97,7 @@ export function SideNav(props: any) {
                 />
               }
             >
-              <Text weight="bold">{liekanProduct.name}</Text>
+              <Text weight="bold">{liekanProduct.title}</Text>
             </IconLabel>
           )}
           <PanelButton />

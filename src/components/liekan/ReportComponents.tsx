@@ -64,7 +64,7 @@ export function MetricCard({
   const card = report?.cards.find(card => card.label === label);
   const place = report?.meta?.geography?.cards?.[label];
   const display =
-    place && i18n.locale === 'en-US'
+    place && i18n.locale !== 'zh-CN'
       ? label === '海外 TOP1'
         ? countryName(place.country, i18n.locale)
         : geographyLabel(place, i18n.locale)
@@ -171,7 +171,7 @@ export function ReferenceChart({
         instance = echarts.init(container.current, 'v5');
         const places = report?.meta?.geography?.charts?.[id];
         const displayChart =
-          places && i18n.locale === 'en-US'
+          places && i18n.locale !== 'zh-CN'
             ? {
                 ...chart,
                 labels: places.map(place =>
@@ -994,7 +994,7 @@ export function ReportList({
                             minute: '2-digit',
                             second: '2-digit',
                             hour12: false,
-                            timeZone: 'Asia/Shanghai',
+                            timeZone: 'Asia/Taipei',
                           }).format(new Date(String(row.time)))
                         : formatValue(row.time)}
                     </span>

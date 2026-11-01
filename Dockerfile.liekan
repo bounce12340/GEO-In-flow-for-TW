@@ -1,13 +1,16 @@
 FROM node:22.23.4-alpine AS dependencies
 WORKDIR /app
-RUN http_proxy="$HTTP_PROXY" https_proxy="$HTTPS_PROXY" no_proxy="$NO_PROXY" apk add --no-cache libc6-compat && npm install -g pnpm@12.3.4
+# Packages come from the official npm registry by default. Builders on networks that need a
+# regional mirror may opt in with LIEKAN_NPM_REGISTRY; lockfile integrity checks still apply.
+ARG LIEKAN_NPM_REGISTRY=
+RUN http_proxy="$HTTP_PROXY" https_proxy="$HTTPS_PROXY" no_proxy="$NO_PROXY" apk add --no-cache libc6-compat && npm install -g pnpm@12.3.4 ${LIEKAN_NPM_REGISTRY:+--registry="$LIEKAN_NPM_REGISTRY"}
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/api-client/package.json ./packages/api-client/
 COPY packages/mcp/package.json ./packages/mcp/
 COPY packages/mcp/bin ./packages/mcp/bin/
 # Keep the frozen installation inside the dependency layer. Native pnpm cache mounts
 # can expose incomplete package manifests while linking on Docker overlay filesystems.
-RUN pnpm install --frozen-lockfile --store-dir=/pnpm/store --network-concurrency=8 --fetch-timeout=300000
+RUN pnpm install --frozen-lockfile --store-dir=/pnpm/store --network-concurrency=8 --fetch-timeout=300000 ${LIEKAN_NPM_REGISTRY:+--registry="$LIEKAN_NPM_REGISTRY"}
 FROM dependencies AS builder
 COPY . .
 COPY docker/proxy.ts ./src/proxy.ts

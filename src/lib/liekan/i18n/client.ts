@@ -37,6 +37,6 @@ export function useLiekanI18n() {
 export function useLiekanPageTitle(title: string) {
   const { locale, system } = useLiekanI18n();
   useEffect(() => {
-    document.title = `${system(title)} | ${liekanProduct.name}`;
+    document.title = `${system(title)} | ${liekanProduct.title}`;
   }, [title, locale]);
 }

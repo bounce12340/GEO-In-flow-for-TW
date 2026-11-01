@@ -11868,7 +11868,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "name": "China" },
+      "properties": { "name": "Taiwan" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
@@ -11885,7 +11885,7 @@
           ]
         ]
       },
-      "id": "CHN"
+      "id": "TWN"
     },
     {
       "type": "Feature",

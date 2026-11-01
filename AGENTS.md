@@ -22,7 +22,7 @@ GEOInflow is the product display name of the Liekan MIT derivative of Umami, wit
 - Crawler control uses independent Zone credentials, durable preview/confirmation and per-Zone leases. Unknown provider results quarantine the Zone across disconnected/frozen connections. Read-only handoff reconciliation never transfers write authority; adoption requires a separate confirmed preview. See docs/crawler-control.md.
 - Crawler risk quality must distinguish missing input, unknown continuity, partial gaps and proved observed-file coverage. Preserve classification versions, epoch fencing, late-data correction and self-check exclusion.
 
-- UI language is zh-CN or en-US. Browser preference and the same-origin locale cookie persist after logout. Translate display text while preserving resource IDs, raw visitor/user content, snapshot identity and Monday-to-Sunday natural weeks. New AI runs and human-readable exports capture locale at submission. See docs/i18n.md.
+- UI language is zh-TW (GEOInflow TW default), zh-CN or en-US. Browser preference and the same-origin locale cookie persist after logout. zh-TW catalogs are generated with `pnpm liekan:zh-tw`; keep them current. Translate display text while preserving resource IDs, raw visitor/user content, snapshot identity and Monday-to-Sunday natural weeks. New AI runs and human-readable exports capture locale at submission. See docs/i18n.md.
 
 - Historical upgrade repair preserves raw collection verdicts and GEO proof, publishes only explicitly confirmed generations, and rechecks website authority at each batch. Keep repair metadata, source boundaries, analytics revisions and rollback generations consistent; see docs/history-repair.md.
 

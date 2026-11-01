@@ -84,7 +84,7 @@ export function LiekanPage({ resource }: { resource: Resource }) {
   const website = useWebsite();
   const accountPreferences = useAccountPreferences();
   const timezone =
-    accountPreferences?.timezone || getFeaturePreferences().timezone || 'Asia/Shanghai';
+    accountPreferences?.timezone || getFeaturePreferences().timezone || 'Asia/Taipei';
   const { dateRange, invalidDate } = useFeatureDateRange(timezone);
   const actualRange = featureDateRange(dateRange, timezone);
   const route = { page: geoPageFromPath(pathname), websiteId };

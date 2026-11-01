@@ -24,6 +24,7 @@ import {
   getRegionFilterValues,
   getPostgresRegionSQL,
   getPostgresCountrySQL,
+  getTaiwanRegionFilterSQL,
 } from './country';
 import { filtersObjectToArray } from './params';
 import type { Operator, PropertyFilter, QueryFilters, QueryOptions } from './types';
@@ -198,7 +199,7 @@ function mapFilter(
     name === 'region'
       ? getPostgresRegionSQL(rawColumn.replace(/region$/, 'country'), rawColumn)
       : name === 'country'
-        ? getPostgresCountrySQL(rawColumn)
+        ? getPostgresCountrySQL(rawColumn, rawColumn.replace(/country$/, 'region'))
         : name === 'city'
           ? cityNameSQL(
               rawColumn.replace(/city$/, 'country'),
@@ -230,15 +231,27 @@ function mapFilter(
       ? `(${qualified} ${comparison} ${join} coalesce(${rawColumn}, ${qualified}) ${comparison})`
       : `${qualified} ${comparison}`;
 
+  // The former Taiwan province value also selects Taiwan records without a county.
+  const taiwanRegion = () =>
+    getTaiwanRegionFilterSQL(
+      rawColumn.replace(/region$/, 'country'),
+      rawColumn,
+      code => `${code} = ANY(${value})`,
+    );
+
   switch (operator) {
     case OPERATORS.equals:
       return name === 'city'
         ? searchGeography(`= ANY(${value})`, 'or')
-        : `${qualified} = ANY(${value})`;
+        : name === 'region'
+          ? `(${qualified} = ANY(${value}) or ${taiwanRegion()})`
+          : `${qualified} = ANY(${value})`;
     case OPERATORS.notEquals:
       return name === 'city'
         ? searchGeography(`!= ALL(${value})`, 'and')
-        : `${qualified} != ALL(${value})`;
+        : name === 'region'
+          ? `(${qualified} != ALL(${value}) and not ${taiwanRegion()})`
+          : `${qualified} != ALL(${value})`;
     case OPERATORS.contains:
       return searchGeography(`ilike ${value}`, 'or');
     case OPERATORS.doesNotContain:

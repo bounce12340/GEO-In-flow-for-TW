@@ -27,7 +27,7 @@ export async function geographyDiagnostics(id: string, input: URLSearchParams) {
   if (!p.success) throw new LiekanError('地域诊断参数无效');
   const endAt = p.data.endAt ?? Date.now(),
     startAt = p.data.startAt ?? endAt - 30 * 86400000,
-    timezone = p.data.timezone || 'Asia/Shanghai';
+    timezone = p.data.timezone || 'Asia/Taipei';
   if (endAt < startAt || endAt - startAt > 366 * 86400000 || endAt > Date.now() + 86400000)
     throw new LiekanError('地域诊断日期范围无效');
   try {

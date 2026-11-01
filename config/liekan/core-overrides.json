@@ -234,6 +234,17 @@
       "removalCondition": "Remove when project documentation uses a replacement locale structure with equivalent content and navigation"
     },
     {
+      "path": "README.zh-TW.md",
+      "purpose": "GEOInflow TW Traditional Chinese (Taiwan) product introduction",
+      "tests": [
+        "Review bilingual README links, commands, license notices and video rendering",
+        "node scripts/liekan-static-check.mjs"
+      ],
+      "owner": "Liekan release maintenance",
+      "constraint": "Preserve upstream behavior and protocols outside this recorded purpose: GEOInflow TW Traditional Chinese (Taiwan) product introduction",
+      "removalCondition": "Remove when project documentation uses a replacement locale structure with equivalent content and navigation"
+    },
+    {
       "path": "THIRD_PARTY_NOTICES.md",
       "purpose": "Retain licenses for durable queue, PostgreSQL client and bundled collector runtime Retain licenses for durable queue, PostgreSQL client and bundled collector runtime; Liekan branding, contributor attribution and third-party license documentation",
       "tests": [
@@ -1198,7 +1209,7 @@
     },
     {
       "path": "public/iso-3166-2.json",
-      "purpose": "Preserved geography and localized display compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71",
+      "purpose": "Preserved geography and localized display compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -4431,7 +4442,7 @@
     },
     {
       "path": "src/lib/clickhouse.test.ts",
-      "purpose": "Connect approved supplementary UI, exact filtered statistics, live share authorization or typed API responses; Aggregate Taiwan geography under China and Taiwan province CN-71; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
+      "purpose": "Connect approved supplementary UI, exact filtered statistics, live share authorization or typed API responses; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
       "owner": "Liekan upstream compatibility",
       "constraint": "Keep tracker, SDK identities, database schema and existing route behavior compatible; UI ownership remains in Liekan directories",
       "removalCondition": "Remove when the upstream exposes an equivalent extension point and regression checks pass",
@@ -4444,7 +4455,7 @@
     },
     {
       "path": "src/lib/clickhouse.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -4484,7 +4495,7 @@
     },
     {
       "path": "src/lib/country.test.ts",
-      "purpose": "Liekan release, branding or compatibility integration; Aggregate Taiwan geography under China and Taiwan province CN-71; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
+      "purpose": "Liekan release, branding or compatibility integration; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
       "tests": [
         "pnpm liekan:verify",
         "Liekan Docker and visual acceptance",
@@ -4497,7 +4508,7 @@
     },
     {
       "path": "src/lib/country.ts",
-      "purpose": "Preserved geography and localized display compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
+      "purpose": "Preserved geography and localized display compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
       "tests": [
         "pnpm liekan:verify",
         "Liekan Docker and visual acceptance",
@@ -4533,7 +4544,7 @@
     },
     {
       "path": "src/lib/detect.test.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -4545,7 +4556,7 @@
     },
     {
       "path": "src/lib/detect.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; Continue collection when optional geography is missing, sharing concurrent opens and bounding retries; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; Continue collection when optional geography is missing, sharing concurrent opens and bounding retries; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -4659,7 +4670,7 @@
     },
     {
       "path": "src/lib/prisma.test.ts",
-      "purpose": "Connect approved supplementary UI, exact filtered statistics, live share authorization or typed API responses; Aggregate Taiwan geography under China and Taiwan province CN-71; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
+      "purpose": "Connect approved supplementary UI, exact filtered statistics, live share authorization or typed API responses; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; normalize reviewed geography aliases at query/display boundaries while preserving stored source values",
       "owner": "Liekan upstream compatibility",
       "constraint": "Keep tracker, SDK identities, database schema and existing route behavior compatible; UI ownership remains in Liekan directories",
       "removalCondition": "Remove when the upstream exposes an equivalent extension point and regression checks pass",
@@ -4672,7 +4683,7 @@
     },
     {
       "path": "src/lib/prisma.ts",
-      "purpose": "Liekan primary query snapshots and typed interactive transactions for website and source lifecycle; Preserve device/geography compatibility, exact channel and drill filters, request-local repeatable-read export snapshots, private AI query logging and bounded derived-statistics caching with live authorization and write invalidation; Aggregate Taiwan geography under China and Taiwan province CN-71; normalize reviewed geography aliases at query/display boundaries while preserving stored source values; preserve cookieless tracking while applying versioned traffic quality and exact event receipt deduplication; reuse the complete bounded property window for repair-aware native property reads; keep website pagination counts and rows on one primary reporting generation; bound the analytics worker pool to two computations and one control connection",
+      "purpose": "Liekan primary query snapshots and typed interactive transactions for website and source lifecycle; Preserve device/geography compatibility, exact channel and drill filters, request-local repeatable-read export snapshots, private AI query logging and bounded derived-statistics caching with live authorization and write invalidation; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; normalize reviewed geography aliases at query/display boundaries while preserving stored source values; preserve cookieless tracking while applying versioned traffic quality and exact event receipt deduplication; reuse the complete bounded property window for repair-aware native property reads; keep website pagination counts and rows on one primary reporting generation; bound the analytics worker pool to two computations and one control connection",
       "tests": [
         "pnpm test:log-ingestion",
         "node scripts/liekan-log-integration.mjs",
@@ -5079,7 +5090,7 @@
     },
     {
       "path": "src/queries/sql/breakdown/getBreakdown.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; read the eligible visit geography tuple while preserving native response fields and revenue visitor cohorts; Bind PostgreSQL environment dimensions, filter candidates and recording labels to eligible event snapshots in the selected window",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; read the eligible visit geography tuple while preserving native response fields and revenue visitor cohorts; Bind PostgreSQL environment dimensions, filter candidates and recording labels to eligible event snapshots in the selected window",
       "tests": [
         "tests/liekan/native-geography.integration.ts",
         "src/lib/country.test.ts",
@@ -5138,7 +5149,7 @@
     },
     {
       "path": "src/queries/sql/events/saveEvent.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; preserve cookieless tracking while applying versioned traffic quality and exact event receipt deduplication",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; preserve cookieless tracking while applying versioned traffic quality and exact event receipt deduplication",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -5489,7 +5500,7 @@
     },
     {
       "path": "src/queries/sql/revenue/getRevenueSessions.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -5513,7 +5524,7 @@
     },
     {
       "path": "src/queries/sql/sessions/createSession.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -5558,7 +5569,7 @@
     },
     {
       "path": "src/queries/sql/sessions/getSessionExpandedMetrics.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; read the eligible visit geography tuple while preserving native response fields and revenue visitor cohorts; Bind PostgreSQL environment dimensions, filter candidates and recording labels to eligible event snapshots in the selected window",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; read the eligible visit geography tuple while preserving native response fields and revenue visitor cohorts; Bind PostgreSQL environment dimensions, filter candidates and recording labels to eligible event snapshots in the selected window",
       "tests": [
         "tests/liekan/native-geography.integration.ts",
         "src/lib/country.test.ts",
@@ -5572,7 +5583,7 @@
     },
     {
       "path": "src/queries/sql/sessions/getSessionMetrics.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; read the eligible visit geography tuple while preserving native response fields and revenue visitor cohorts; Bind PostgreSQL environment dimensions, filter candidates and recording labels to eligible event snapshots in the selected window; use exact covered visit facts and whole-window identity evidence in one primary snapshot",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; read the eligible visit geography tuple while preserving native response fields and revenue visitor cohorts; Bind PostgreSQL environment dimensions, filter candidates and recording labels to eligible event snapshots in the selected window; use exact covered visit facts and whole-window identity evidence in one primary snapshot",
       "tests": [
         "tests/liekan/native-geography.integration.ts",
         "src/lib/country.test.ts",
@@ -5598,7 +5609,7 @@
     },
     {
       "path": "src/queries/sql/sessions/getWebsiteSession.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",
@@ -5621,7 +5632,7 @@
     },
     {
       "path": "src/queries/sql/sessions/getWebsiteSessions.ts",
-      "purpose": "Inherited device/geography compatibility; Aggregate Taiwan geography under China and Taiwan province CN-71; keep historical repair count and rows within one primary analytics snapshot",
+      "purpose": "Inherited device/geography compatibility; Report Taiwan geography as country TW with ISO 3166-2:TW regions, normalizing legacy China-Taiwan records at query time; keep historical repair count and rows within one primary analytics snapshot",
       "tests": [
         "src/lib/country.test.ts",
         "src/lib/detect.test.ts",

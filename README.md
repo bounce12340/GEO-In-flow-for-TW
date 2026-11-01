@@ -1,6 +1,6 @@
 # GEOInflow
 
-**English** | [简体中文](README.zh-CN.md)
+**English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
 Self-hosted web and AI crawler analytics for Generative Engine Optimization (GEO).
 
@@ -73,7 +73,7 @@ See the [AI crawler analytics guide](docs/ai-crawler-analytics.md) for metrics, 
 | AI assistance | Optional model connections and conversations based on website facts, disabled by default |
 | Operations and governance | Ingestion checks, historical data repair, analytics acceleration, and source and rule versioning |
 
-The application supports Simplified Chinese and English. The main date ranges are Today / 7 days / 30 days, and the default analytics timezone is `Asia/Shanghai`. The first full sign-in confirms the country and city timezone; later requests use the account's saved timezone to define today. Realtime visitors cover the most recent 30 minutes, and retention uses calendar months.
+The application supports Traditional Chinese (Taiwan, default in GEOInflow TW), Simplified Chinese and English. The main date ranges are Today / 7 days / 30 days, and the default analytics timezone is `Asia/Taipei`. The first full sign-in confirms the country and city timezone; later requests use the account's saved timezone to define today. Realtime visitors cover the most recent 30 minutes, and retention uses calendar months.
 
 Browser metrics share a common traffic-quality policy. Empty data, missing integrations, unknown values, estimates, and unsupported capabilities are shown as distinct states. Demo websites are explicitly labeled. See [page coverage](docs/ui-coverage.md) for the feature matrix and [date ranges and timezones](docs/date-ranges.md) for date definitions.
 

@@ -174,7 +174,7 @@ export async function getHumanFacts(
   const needs = (field: HumanFact) => !fields || selected.has(field);
   const statements: Record<string, string> = {
     daily: humanBinsSql(),
-    geo: ` SELECT ${getPostgresCountrySQL('v.country')} AS country,${getPostgresRegionSQL('v.country', 'v.region')} AS region,v.city,sum(v.duration)::float AS "durationTotal",count(v.duration)::int AS "durationSamples",${visitMetrics} FROM visits v ${convertedJoin} GROUP BY 1,2,3 ORDER BY sessions DESC,1,2,3`,
+    geo: ` SELECT ${getPostgresCountrySQL('v.country', 'v.region')} AS country,${getPostgresRegionSQL('v.country', 'v.region')} AS region,v.city,sum(v.duration)::float AS "durationTotal",count(v.duration)::int AS "durationSamples",${visitMetrics} FROM visits v ${convertedJoin} GROUP BY 1,2,3 ORDER BY sessions DESC,1,2,3`,
     sources: ` SELECT v.referrer,v."utmSource",v."utmMedium",v."utmCampaign",${visitMetrics} FROM visits v ${convertedJoin} GROUP BY 1,2,3,4 ORDER BY sessions DESC,1,2,3,4`,
     environment: ` SELECT device,browser,os,count(*)::int AS sessions FROM visits GROUP BY 1,2,3 ORDER BY sessions DESC,1,2,3`,
     pages: `, ordered AS (SELECT *,row_number() OVER(PARTITION BY visit_id,session_id ORDER BY created_at,event_id) AS ordinal,extract(epoch FROM lead(created_at) OVER(PARTITION BY visit_id,session_id ORDER BY created_at,event_id)-created_at)::float AS dwell FROM events WHERE event_type NOT IN(2,5))

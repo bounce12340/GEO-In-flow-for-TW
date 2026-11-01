@@ -90,10 +90,11 @@ beforeEach(() => {
 });
 it('returns only aggregate fields in one snapshot and preserves the demo marker', async () => {
   const report = await readSharedReport(request(), id);
+  // A legacy share without a saved timezone uses the product default, not the viewer's value.
   expect(mocks.build).toHaveBeenCalledWith(
     website,
     false,
-    { ...input, resource: 'overview' },
+    { ...input, timezone: 'Asia/Taipei', resource: 'overview' },
     'share',
   );
   expect(mocks.snapshot).toHaveBeenCalledOnce();

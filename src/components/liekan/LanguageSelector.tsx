@@ -46,6 +46,7 @@ export function LanguageSelector({
             setPersistenceError(!persisted);
           }}
         >
+          <option value="zh-TW">繁體中文</option>
           <option value="zh-CN">简体中文</option>
           <option value="en-US">English</option>
         </select>
@@ -54,7 +55,9 @@ export function LanguageSelector({
         <small role="status">
           {locale === 'en-US'
             ? 'Language changed for this page. Browser settings prevented saving your preference.'
-            : '本页语言已切换，浏览器设置阻止了偏好保存。'}
+            : locale === 'zh-TW'
+              ? '本頁語言已切換，瀏覽器設定阻止了偏好儲存。'
+              : '本页语言已切换，浏览器设置阻止了偏好保存。'}
         </small>
       )}
     </div>

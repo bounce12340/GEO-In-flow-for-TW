@@ -52,7 +52,7 @@ export default async function ({ children }) {
 
 export async function generateMetadata(): Promise<Metadata> {
   const headerStore = await headers();
-  const name = liekanProduct.name;
+  const name = liekanProduct.title;
 
   return {
     metadataBase: getBaseUrl(headerStore),

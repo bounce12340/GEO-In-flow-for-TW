@@ -1,13 +1,16 @@
 # 地域统计规则
 
-台湾是中国的一部分。猎看统计将台湾相关访问归入中国，省级分布统一显示为台湾。
+GEOInflow TW 将台湾作为独立国家编码 `TW` 统计，县市使用 ISO 3166-2:TW 编码（例如 `TW-TPE`、`TW-KHH`、`TW-NWT`）。
 
-- 国家编码统一为 `CN`；地理数据源中的 `TW`、`TWN` 作为兼容输入归入中国。
-- 台湾省统一使用 `CN-71`。历史 `TW-*`、`TWN-*` 和已经转换为 `CN-TPE`、`CN-KHH` 等编码的台湾县市记录，按台湾省汇总。仅有 `TW` 或 `TWN` 国家编码时，也能确定台湾省。
+- 国家编码：`TW`、`TWN`（任意大小写）归一化为 `TW`。旧记录中国家为 `CN` 或为空、省份为 `CN-71`、`CN-TW` 或 `CN-TPE`、`CN-KHH` 等台湾县市编码的记录，也计为 `TW`。国家为 `CN` 且省份为不带前缀的台湾县市编码（例如 `TPE`）的记录同样计为 `TW`。其他国家保持原值。
+- 省份编码：能识别县市的台湾记录使用 `TW-<县市>`；`TWN-*` 与 `CN-<台湾县市>` 旧编码转换为对应的 `TW-*`。只说明台湾、没有县市信息的记录（仅有 `TW` / `TWN` 国家、`CN-71`、`CN-TW`）没有省份，与其他国家缺少省份时的处理相同，不推断县市。台湾县市目前没有中文显示名，显示原编码。
+- 中国省份列表与省份覆盖率不再包含台湾；台湾访问不计入中国访问与中国省份覆盖率。
+- 筛选：国家等值条件只比较归一化后的编码，`CN` 不匹配台湾记录，`TW` 匹配 `TW`、`TWN` 和旧的中国-台湾记录。省份条件 `CN-TPE`、`TWN-KHH` 等旧链接匹配对应的 `TW-*` 县市；`CN-71`、`CN-TW` 与“台湾”匹配全部台湾记录，包括没有县市信息的记录。
 - 城市字段保留数据源提供的城市信息。没有国家或省份线索的记录保留缺失状态。
-- 台湾相关采集、PostgreSQL 与 ClickHouse 的分组查询、国家数量、地域筛选和显示复用 `src/lib/country.ts` 的规则。省份筛选先归一化历史记录，再应用条件，支持旧编码链接。
-- 历史数据在查询时归并，原始记录和数据库结构保持兼容。
-- 旧省份编码的包含、排除和正则条件，同时检查原始编码与归一化编码，保留已保存条件的匹配能力。地域报告缓存使用新版本命名空间，升级后重新生成报告。
+- 采集、PostgreSQL 与 ClickHouse 的分组查询、国家数量、地域筛选和显示复用 `src/lib/country.ts` 的规则。新采集的台湾访问写入 `TW` 与 `TW-*`。
+- 历史数据在查询时归一化，原始记录和数据库结构保持不变，不新增迁移。
+- 旧省份编码的包含、排除和正则条件，同时检查原始编码与归一化编码，保留已保存条件的匹配能力。地域规则版本为 `rules-6`，报告与统计缓存使用新版本命名空间，升级后重新生成。
+- 世界地图恢复台湾图形的 `TWN` 编码。项目内没有台湾旗帜图片，台湾显示通用图标。
 
 回归检查位于 `src/lib/country.test.ts`、`src/lib/detect.test.ts`、`src/lib/prisma.test.ts`、`src/lib/clickhouse.test.ts`、`src/lib/liekan/upstream/geography.test.ts`。`scripts/liekan-data-regression.mjs` 使用只读合成数据验证真实 PostgreSQL 的国家汇总、省份汇总和历史记录筛选。
 
@@ -34,7 +37,7 @@ ClickHouse 城市表达式在每条查询的 `WITH` 中定义一次带明确入�
 
 ## 字典来源、许可与更新
 
-字典版本 `2026-10-11.1` 包含 34 个省级名称和 408 个审核地名，覆盖截图中的城市、大陆地级市与已审核的自治州驻地，并保留部分已审核县市、香港、澳门和台湾地域名称。目录位于 `src/lib/liekan/contracts/geography-catalog.json`，每项保留 GeoNames ID、国家、省份、简体中文名和明确别名。覆盖范围以目录为准，未命中原名不转为城市未知。
+字典版本 `2026-10-28.1` 包含 33 个省级名称和 408 个审核地名，覆盖截图中的城市、大陆地级市与已审核的自治州驻地，并保留部分已审核县市、香港、澳门和台湾地域名称。台湾地名归入国家 `TW`，与香港、澳门地名一样不设省份。目录位于 `src/lib/liekan/contracts/geography-catalog.json`，每项保留 GeoNames ID、国家、省份、简体中文名和明确别名。覆盖范围以目录为准，未命中原名不转为城市未知。
 
 数据来源为 [GeoNames](https://www.geonames.org/)，下载日期为 2026-10-11，国别数据、语言别名数据和省级编码表的来源 URL 与 SHA-256 保存在目录中。数据采用 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 许可；猎看进行了地域筛选、中文名称审核与省份编码转换。署名及变更说明保存在 `public/liekan/licenses/geography.json`，关于页面与分享页保留署名。GeoNames 地名数据与 DB-IP/MaxMind IP 定位数据库分别署名。
 
@@ -64,6 +67,10 @@ ClickHouse 补充回归运行 `pnpm exec tsx scripts/liekan-geography-clickhouse
 - [Plausible 定位采集](https://github.com/plausible/analytics/blob/master/lib/plausible/ingestion/geolocation.ex) 保存城市 GeoNames ID 与 ISO 地域编码，其 [Location 地名库](https://github.com/plausible/location) 独立提供地名数据。猎看现有记录仅有名称，因此查询时结合国家、省份与审核别名确定身份，保留缺失依据。
 - [Matomo GeoIP2 地域处理](https://github.com/matomo-org/matomo/blob/5.x-dev/plugins/GeoIp2/LocationProvider/GeoIp2.php) 明确区分 FIPS 与 ISO 编码，并支持 DB-IP 与 MaxMind 数据库。猎看的目录更新也保留来源编码对照与定位库能力边界。
 - [GeoNames 数据格式](https://download.geonames.org/export/dump/readme.txt) 提供语言、历史名称、地物类别与行政编码元数据；审核城市目录时保留对应地域身份与明确别名。
+
+## Taiwan (English summary)
+
+GEOInflow TW reports Taiwan as its own country code `TW`. `TWN` and legacy rows stored under China (country `CN` or empty with region `CN-71`, `CN-TW` or a `CN-<Taiwan county>` code) are normalized to `TW` at query time; stored values and the schema are unchanged. Counties use ISO 3166-2:TW codes (`TW-TPE`); records that name Taiwan without a county have no region. A `CN` country filter no longer matches Taiwan records. Old region links (`CN-TPE`, `TWN-KHH`) select the matching county, and `CN-71` selects every Taiwan record.
 
 ## Display language
 

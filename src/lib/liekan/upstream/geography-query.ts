@@ -8,7 +8,7 @@ import {
 import {
   getClickHouseCountrySQL,
   getPostgresCountrySQL,
-  getTaiwanRegionCondition,
+  getTaiwanCondition,
   getPostgresRegionSQL,
   getClickHouseRegionSQL,
 } from '@/lib/country';
@@ -16,8 +16,9 @@ import {
 // PostgreSQL event reads expose the complete eligible visit anchor through the traffic policy.
 export function postgresVisitGeographyColumn(name: string) {
   const country = 'website_event.liekan_country';
-  if (name === 'country') return getPostgresCountrySQL(country);
-  if (name === 'region') return getPostgresRegionSQL(country, 'website_event.liekan_region');
+  const region = 'website_event.liekan_region';
+  if (name === 'country') return getPostgresCountrySQL(country, region);
+  if (name === 'region') return getPostgresRegionSQL(country, region);
   if (name === 'city') return 'website_event.liekan_city';
   return name;
 }
@@ -89,13 +90,16 @@ function cityExpressionSQL(
   country = lookupTextSQL(country, dialect);
   region = lookupTextSQL(region, dialect);
   const rawCountry =
-    dialect === 'postgres' ? getPostgresCountrySQL(country) : getClickHouseCountrySQL(country);
+    dialect === 'postgres'
+      ? getPostgresCountrySQL(country, region)
+      : getClickHouseCountrySQL(country, region);
   const normalizedRegion =
     dialect === 'postgres'
       ? getPostgresRegionSQL(country, region)
       : getClickHouseRegionSQL(country, region);
   const cc = `case when ${rawCountry} = 'CN' and upper(${region}) in ('CN-91','CN-HK','91','HK') then 'HK' when ${rawCountry} = 'CN' and upper(${region}) in ('CN-92','CN-MO','92','MO') then 'MO' else ${rawCountry} end`;
-  const rg = `case when ${cc} in ('HK','MO') then '' else ${normalizedRegion} end`;
+  // HK, MO and TW catalogue places carry no province.
+  const rg = `case when ${cc} in ('HK','MO','TW') then '' else ${normalizedRegion} end`;
   const lowerCity =
     dialect === 'postgres'
       ? `lower(${lookupTextSQL(city, dialect)})`
@@ -234,14 +238,17 @@ export function regionSearchSQL(
         `when '${p.code}' then ${dialect === 'postgres' ? 'ARRAY' : ''}[${regionAliases(p.code, 'CN').map(literal).join(',')}]`,
     )
     .join(' ');
-  const context = `(${getTaiwanRegionCondition(country, region)} or upper(${country}) = 'CN' or (coalesce(${country}, '') = '' and upper(${region}) like 'CN-%'))`;
+  const taiwan = getTaiwanCondition(country, region);
+  const context = `(upper(${country}) = 'CN' or (coalesce(${country}, '') = '' and upper(${region}) like 'CN-%'))`;
+  // Taiwan records also match their ISO 3166-2:TW code and the names of the former province.
+  const taiwanAliases = ['Taiwan', '台湾', '台灣'].map(literal).join(',');
   const array =
     dialect === 'postgres'
-      ? `case when ${context} then case ${normalized} ${cases} else ARRAY[${region}] end else ARRAY[${region}] end`
-      : `case when ${context} then arrayElement(arrayConcat([[${region}]], {liekan_geography_region_aliases:Array(Array(String))}), transform(${normalized}, {liekan_geography_region_codes:Array(String)}, {liekan_geography_region_indices:Array(UInt32)}, 0) + 1) else [${region}] end`;
+      ? `case when ${taiwan} then ARRAY[${normalized},${region},${taiwanAliases}] when ${context} then case ${normalized} ${cases} else ARRAY[${region}] end else ARRAY[${region}] end`
+      : `case when ${taiwan} then [${normalized},${region},${taiwanAliases}] when ${context} then arrayElement(arrayConcat([[${region}]], {liekan_geography_region_aliases:Array(Array(String))}), transform(${normalized}, {liekan_geography_region_codes:Array(String)}, {liekan_geography_region_indices:Array(UInt32)}, 0) + 1) else [${region}] end`;
   const negative = operator === 'dnc' || operator === 'nre',
     regex = operator === 're' || operator === 'nre';
   return dialect === 'postgres'
-    ? `(${normalized} is not null and ${negative ? 'not ' : ''}exists (select 1 from unnest(${array}) as aliases(alias) where alias ${regex ? '~*' : 'ilike'} ${value} or ${region} ${regex ? '~*' : 'ilike'} ${value}))`
+    ? `((${normalized} is not null or ${taiwan}) and ${negative ? 'not ' : ''}exists (select 1 from unnest(${array}) as aliases(alias) where alias ${regex ? '~*' : 'ilike'} ${value} or ${region} ${regex ? '~*' : 'ilike'} ${value}))`
     : `(${normalized} is not null and ${negative ? 'not ' : ''}arrayExists(alias -> ${regex ? `match(alias, concat('(?i)', ${value}))` : `positionCaseInsensitiveUTF8(alias, ${value}) > 0`}, arrayConcat(${array}, [${region}])))`;
 }

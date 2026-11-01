@@ -199,8 +199,8 @@ async function clickhouseQuery(websiteId: string, column: string, filters: Query
 function getValueColumn(column: string, database: 'postgres' | 'clickhouse') {
   if (column === 'country') {
     return database === 'postgres'
-      ? getPostgresCountrySQL(column)
-      : getClickHouseCountrySQL(column);
+      ? getPostgresCountrySQL(column, 'region')
+      : getClickHouseCountrySQL(column, 'region');
   }
 
   if (column === 'region') {

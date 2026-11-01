@@ -4,6 +4,7 @@ import { getPublishedCatalog } from '../crawlers/published';
 import { TRAFFIC_POLICY_VERSION } from './traffic-query';
 import { liekanProduct } from '@/lib/liekan/contracts/product';
 import { getPostgresCountrySQL } from '@/lib/country';
+import { translateSystemText } from '../i18n/text';
 import { createHash, randomBytes } from 'node:crypto';
 import JSZip from 'jszip';
 import Papa from 'papaparse';
@@ -80,7 +81,9 @@ const englishExportLabels: Record<string, string> = {
 const exportLabel = (source: string, locale?: LiekanLocale) =>
   locale === 'en-US' && Object.hasOwn(englishExportLabels, source)
     ? englishExportLabels[source]
-    : source;
+    : locale === 'zh-TW'
+      ? translateSystemText(source, locale)
+      : source;
 const englishFieldLabels: Record<string, string> = {
   pageviews: 'Pageviews',
   visitors: 'Visitors',
@@ -302,7 +305,7 @@ async function prepareSnapshot(
       ['countries', 'country', true],
     ] as const) {
       const query = session
-        ? `SELECT ${column === 'country' ? getPostgresCountrySQL('s.liekan_country') : `s.liekan_${column}`} AS name,COUNT(DISTINCT s.session_id) AS visitors,COUNT(*) FILTER(WHERE event_type=1) AS views FROM selected s WHERE s.event_type=1 GROUP BY 1 ORDER BY visitors DESC,name`
+        ? `SELECT ${column === 'country' ? getPostgresCountrySQL('s.liekan_country', 's.liekan_region') : `s.liekan_${column}`} AS name,COUNT(DISTINCT s.session_id) AS visitors,COUNT(*) FILTER(WHERE event_type=1) AS views FROM selected s WHERE s.event_type=1 GROUP BY 1 ORDER BY visitors DESC,name`
         : `SELECT ${column} AS name,COUNT(DISTINCT session_id) AS visitors,COUNT(*) AS views FROM selected WHERE event_type=1 GROUP BY 1 ORDER BY views DESC,name`;
       add(`${name}.csv`, await paged(query));
     }
@@ -325,7 +328,7 @@ async function prepareSnapshot(
     add(
       'sessions.csv',
       await paged(
-        `SELECT s.session_id AS id,MIN(s.created_at) AS "firstAt",MAX(s.created_at) AS "lastAt",COUNT(*) FILTER(WHERE event_type=1) AS views,COUNT(*) FILTER(WHERE event_type=2) AS events,COUNT(DISTINCT visit_id) AS visits,(ARRAY_AGG(s.liekan_browser ORDER BY s.created_at DESC,s.event_id DESC))[1] AS browser,(ARRAY_AGG(s.liekan_device ORDER BY s.created_at DESC,s.event_id DESC))[1] AS device,${getPostgresCountrySQL('(ARRAY_AGG(s.liekan_country ORDER BY s.created_at DESC,s.event_id DESC))[1]')} AS country FROM selected s GROUP BY s.session_id ORDER BY "lastAt",s.session_id`,
+        `SELECT s.session_id AS id,MIN(s.created_at) AS "firstAt",MAX(s.created_at) AS "lastAt",COUNT(*) FILTER(WHERE event_type=1) AS views,COUNT(*) FILTER(WHERE event_type=2) AS events,COUNT(DISTINCT visit_id) AS visits,(ARRAY_AGG(s.liekan_browser ORDER BY s.created_at DESC,s.event_id DESC))[1] AS browser,(ARRAY_AGG(s.liekan_device ORDER BY s.created_at DESC,s.event_id DESC))[1] AS device,${getPostgresCountrySQL('(ARRAY_AGG(s.liekan_country ORDER BY s.created_at DESC,s.event_id DESC))[1]', '(ARRAY_AGG(s.liekan_region ORDER BY s.created_at DESC,s.event_id DESC))[1]')} AS country FROM selected s GROUP BY s.session_id ORDER BY "lastAt",s.session_id`,
         r => ({ ...r, id: mask(r.id) }),
       ),
     );
@@ -370,7 +373,9 @@ async function prepareSnapshot(
     privacy:
       p.locale === 'en-US' && p.format !== 'json'
         ? 'Session identifiers are anonymized within this file. Raw IP addresses, account credentials, keys and backup codes are excluded.'
-        : '会话标识在本文件内脱敏；不包含原始 IP、账户凭据、密钥或备份代码',
+        : p.locale === 'zh-TW' && p.format !== 'json'
+          ? '工作階段識別碼在本檔案內去識別化；不包含原始 IP、帳戶憑證、金鑰或備份代碼'
+          : '会话标识在本文件内脱敏；不包含原始 IP、账户凭据、密钥或备份代码',
     files: files.map(({ name, rows, fields }) => ({
       name,
       rows,

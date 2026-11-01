@@ -185,7 +185,7 @@ function getFieldColumn(name: string, database: 'postgres' | 'clickhouse') {
     return postgresVisitGeographyColumn(name);
 
   if (name === 'country') {
-    return getClickHouseCountrySQL('website_event.country');
+    return getClickHouseCountrySQL('website_event.country', 'website_event.region');
   }
 
   if (name === 'region') {

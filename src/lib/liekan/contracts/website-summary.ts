@@ -15,7 +15,7 @@ export const websiteSummaryQuery = z
       ),
     startAt: z.coerce.number().int().min(0),
     endAt: z.coerce.number().int().min(0),
-    timezone: z.string().max(80).default('Asia/Shanghai'),
+    timezone: z.string().max(80).default('Asia/Taipei'),
   })
   .refine(p => p.endAt >= p.startAt, '日期范围无效');
 const totals = z.object({

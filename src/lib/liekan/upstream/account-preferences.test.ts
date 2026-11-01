@@ -76,8 +76,8 @@ beforeEach(() => {
 
 it('GET returns the default without creating or confirming preferences', async () => {
   expect(await readAccountPreferences(request)).toEqual({
-    countryCode: 'CN',
-    timezone: 'Asia/Shanghai',
+    countryCode: 'TW',
+    timezone: 'Asia/Taipei',
     range: '0day',
     configured: false,
     updatedAt: null,
@@ -143,17 +143,22 @@ it('initializes once and preserves server values over later browser values', asy
 });
 
 it.each([
-  {},
-  { timezone: 'invalid/zone', range: 'garbage' },
-  { timezone: 'Asia/Shanghai', range: '24hour' },
-])('initializes the China/Today default from %s', async input => {
-  expect(await initializeAccountPreferences(request, input)).toMatchObject({
-    countryCode: 'CN',
-    timezone: 'Asia/Shanghai',
-    range: '0day',
-    configured: false,
-  });
-});
+  [{}, 'Asia/Taipei', 'TW'],
+  [{ timezone: 'invalid/zone', range: 'garbage' }, 'Asia/Taipei', 'TW'],
+  [{ timezone: 'Asia/Shanghai', range: '24hour' }, 'Asia/Shanghai', 'CN'],
+  [{ timezone: 'Asia/Taipei', range: '24hour' }, 'Asia/Taipei', 'TW'],
+  [{ timezone: 'Asia/Tokyo', range: '24hour' }, 'Asia/Tokyo', null],
+])(
+  'initializes the Taipei/Today default or a browser zone from %s; Taipei implies TW and Shanghai CN',
+  async (input, timezone, countryCode) => {
+    expect(await initializeAccountPreferences(request, input)).toMatchObject({
+      countryCode,
+      timezone,
+      range: '0day',
+      configured: false,
+    });
+  },
+);
 
 it('explicit confirmation accepts a matching alias and remains authoritative on initialization', async () => {
   const saved = await saveAccountPreferences(request, {
@@ -185,7 +190,7 @@ it('keeps users isolated and rejects caller-supplied identity fields', async () 
   h.actorId = otherId;
   expect(await readAccountPreferences(request)).toMatchObject({
     configured: false,
-    timezone: 'Asia/Shanghai',
+    timezone: 'Asia/Taipei',
   });
   await initializeAccountPreferences(request, { timezone: 'Europe/London', range: '90day' });
   h.actorId = actorId;

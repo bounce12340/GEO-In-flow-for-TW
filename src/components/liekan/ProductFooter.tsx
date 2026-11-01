@@ -19,7 +19,7 @@ export function ProductFooter() {
       <div className={styles.inner}>
         <div className={styles.identity}>
           <Link className={styles.version} prefetch={false} href={liekanProduct.links.changelog}>
-            {liekanProduct.name} v{liekanProduct.displayVersion}
+            {liekanProduct.title} v{liekanProduct.displayVersion}
           </Link>
           <span className={styles.publishers} data-product-publishers>
             <span>{i18n.text('联合发布：')}</span>

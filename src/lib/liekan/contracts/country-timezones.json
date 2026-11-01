@@ -52,9 +52,7 @@
       "sha256": "b8296b9ef1ece72d813878132c0f17e2c52b26af6004eeb9c37d049b64cd9401"
     }
   ],
-  "countryCodeMappings": {
-    "TW": "CN"
-  },
+  "countryCodeMappings": {},
   "supplementalMappings": {
     "BV": {
       "zones": [
@@ -293,8 +291,7 @@
     ],
     "CN": [
       "Asia/Shanghai",
-      "Asia/Urumqi",
-      "Asia/Taipei"
+      "Asia/Urumqi"
     ],
     "CO": [
       "America/Bogota"
@@ -901,6 +898,9 @@
     ],
     "TV": [
       "Pacific/Funafuti"
+    ],
+    "TW": [
+      "Asia/Taipei"
     ],
     "TZ": [
       "Africa/Dar_es_Salaam"

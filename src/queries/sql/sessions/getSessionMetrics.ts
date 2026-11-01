@@ -136,7 +136,7 @@ async function clickhouseQuery(
   if (type === 'language') {
     column = `lower(left(${type}, 2))`;
   }
-  const countryColumn = getClickHouseCountrySQL('website_event.country');
+  const countryColumn = getClickHouseCountrySQL('website_event.country', 'website_event.region');
 
   if (type === 'country') {
     column = countryColumn;

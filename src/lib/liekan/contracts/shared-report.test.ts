@@ -6,7 +6,7 @@ it('uses complete local calendar days so different share viewers request the sam
   expect(first).toEqual(sharedDateRange(30, Date.parse('2026-10-05T12:45:00Z')));
   expect(first.startAt).toBe(Date.parse('2026-09-05T16:00:00Z'));
   expect(first.endAt).toBe(Date.parse('2026-10-05T15:59:59.999Z'));
-  expect(first.timezone).toBe('Asia/Shanghai');
+  expect(first.timezone).toBe('Asia/Taipei');
 });
 it('keeps the 24h rolling window at hourly chart resolution and aligns it to a minute', () => {
   const range = sharedDateRange(1, Date.parse('2026-10-05T12:45:59Z'));
@@ -42,7 +42,7 @@ it('retains legacy defaults and explicit historical range identity', () => {
   });
   expect(saved).toEqual({ timezone: 'Europe/London', range: 'range:123:456' });
   expect(resolveSharedDateRange({ timezone: 'bad', range: '0day' }, now).timezone).toBe(
-    'Asia/Shanghai',
+    'Asia/Taipei',
   );
 });
 

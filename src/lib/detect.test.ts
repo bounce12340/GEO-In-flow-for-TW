@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest';
-import { LEGACY_COUNTRY_CODE } from './country';
+import { LEGACY_TAIWAN_REGION_CODE, TAIWAN_COUNTRY_CODE } from './country';
 import { getClientInfo, getDevice, getLocation, hasBlockedIp } from './detect';
 import { getIpAddress } from './ip';
 
@@ -77,30 +77,47 @@ test('getLocation: treats localhost check errors as non-local', async () => {
   });
 });
 
-test('getLocation: stores legacy geolocation as China', async () => {
+test.each([`${TAIWAN_COUNTRY_CODE}-TPE`, 'TPE'])(
+  'getLocation: stores Taiwan geolocation as TW with ISO county %s',
+  async region => {
+    await expect(
+      getLocation(
+        '8.8.8.8',
+        new Headers({
+          'cf-ipcountry': TAIWAN_COUNTRY_CODE,
+          'cf-region-code': region,
+          'cf-ipcity': 'Taipei',
+        }),
+        false,
+      ),
+    ).resolves.toEqual({
+      country: 'TW',
+      region: 'TW-TPE',
+      city: 'Taipei',
+    });
+  },
+);
+
+test('getLocation: stores a legacy China-Taiwan province header as TW without a county', async () => {
   await expect(
     getLocation(
       '8.8.8.8',
       new Headers({
-        'cf-ipcountry': LEGACY_COUNTRY_CODE,
-        'cf-region-code': `${LEGACY_COUNTRY_CODE}-TPE`,
+        'cf-ipcountry': 'CN',
+        'cf-region-code': LEGACY_TAIWAN_REGION_CODE,
         'cf-ipcity': 'Taipei',
       }),
       false,
     ),
-  ).resolves.toEqual({
-    country: 'CN',
-    region: 'CN-71',
-    city: 'Taipei',
-  });
+  ).resolves.toMatchObject({ country: 'TW', region: null, city: 'Taipei' });
 });
 
 test.each(['TW', 'TWN'])(
-  'getLocation: identifies Taiwan province with only country %s',
+  'getLocation: keeps country %s as TW without inventing a county',
   async country => {
-    await expect(
-      getLocation('8.8.8.8', new Headers({ 'cf-ipcountry': country }), false),
-    ).resolves.toMatchObject({ country: 'CN', region: 'CN-71' });
+    const location = await getLocation('8.8.8.8', new Headers({ 'cf-ipcountry': country }), false);
+    expect(location?.country).toBe('TW');
+    expect(location?.region ?? null).toBeNull();
   },
 );
 

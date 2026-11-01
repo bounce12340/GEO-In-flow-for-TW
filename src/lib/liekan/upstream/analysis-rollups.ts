@@ -416,7 +416,7 @@ function visitFilterColumn(key: string, selectedValue?: string) {
     region = "(dimensions->>'region')",
     city = "(dimensions->>'city')";
   if (key === 'hostname') return 'hostname';
-  if (key === 'country') return getPostgresCountrySQL(country);
+  if (key === 'country') return getPostgresCountrySQL(country, region);
   if (key === 'region') return getPostgresRegionSQL(country, region);
   if (key === 'city') return cityNameSQL(country, region, city, 'postgres', selectedValue);
   return `dimensions->>'${key}'`;
@@ -588,7 +588,7 @@ export async function readAnalysisVisitMetrics(
     offset < 0
   )
     return null;
-  const country = getPostgresCountrySQL("(dimensions->>'country')");
+  const country = getPostgresCountrySQL("(dimensions->>'country')", "(dimensions->>'region')");
   const column =
     input.type === 'language'
       ? "lower(left(dimensions->>'language',2))"

@@ -298,20 +298,42 @@ describe('Liekan breakdown drill filters', () => {
     expect(literal.filterQuery).toContain('else upper(session.country) end = ANY({{country}})');
     expect(literal.queryParams).toMatchObject({ country: ['EMPTY.'] });
     const drill = prisma.parseFilters({ drill_country: 'eq.CN' });
-    expect(drill.queryParams).toMatchObject({ drill_country: ['CN', 'TW', 'TWN'] });
+    expect(drill.queryParams).toMatchObject({ drill_country: ['CN'] });
   });
-  test.each(['eq', 'neq'])('filters the normalized Taiwan province with %s', operator => {
-    const parsed = prisma.parseFilters({ region: `${operator}.CN-71` });
-    expect(parsed.queryParams).toMatchObject({ region: ['CN-71'] });
-    expect(parsed.filterQuery).toContain("upper(session.country) in ('TW', 'TWN')");
-    expect(parsed.filterQuery).toContain("then 'CN-71' when");
-    expect(parsed.filterQuery).toContain(
-      operator === 'eq' ? '= ANY({{region}})' : '!= ALL({{region}})',
+  test('filters Taiwan as its own country, including legacy China-Taiwan rows', () => {
+    const china = prisma.parseFilters({ country: 'eq.CN' });
+    expect(china.queryParams).toMatchObject({ country: ['CN'] });
+    expect(china.filterQuery).toContain(
+      "case when (upper(session.country) in ('TW', 'TWN') or ((upper(session.country) = 'CN'",
     );
+    expect(china.filterQuery).toContain(
+      "then 'TW' else upper(session.country) end = ANY({{country}})",
+    );
+    expect(china.filterQuery).not.toContain('coalesce(session.country, case');
+    const taiwan = prisma.parseFilters({ country: 'eq.TWN' });
+    expect(taiwan.queryParams).toMatchObject({ country: ['TW'] });
   });
-  test('normalizes legacy province drills and keeps mainland filters separate', () => {
-    const parsed = prisma.parseFilters({ drill_region: 'eq.TW-TPE', region: 'eq.CN-SH' });
-    expect(parsed.queryParams).toMatchObject({ drill_region: ['CN-71'], region: ['CN-31'] });
+  test.each(['eq', 'neq'])(
+    'the former Taiwan province selects all Taiwan rows with %s',
+    operator => {
+      const parsed = prisma.parseFilters({ region: `${operator}.CN-71` });
+      expect((parsed.queryParams as Record<string, string[]>).region).toEqual(
+        expect.arrayContaining(['TW', 'TW-TPE', 'TW-KHH']),
+      );
+      expect((parsed.queryParams as Record<string, string[]>).region).not.toContain('CN-71');
+      expect(parsed.filterQuery).toContain("upper(session.country) in ('TW', 'TWN')");
+      expect(parsed.filterQuery).toContain("when 'CN-TPE' then 'TW-TPE'");
+      expect(parsed.filterQuery).toContain(
+        operator === 'eq'
+          ? "= ANY({{region}}) or ((upper(session.country) in ('TW', 'TWN')"
+          : "!= ALL({{region}}) and not ((upper(session.country) in ('TW', 'TWN')",
+      );
+      expect(parsed.filterQuery).toContain("'TW' = ANY({{region}})");
+    },
+  );
+  test('normalizes legacy county drills and keeps mainland filters separate', () => {
+    const parsed = prisma.parseFilters({ drill_region: 'eq.CN-TPE', region: 'eq.CN-SH' });
+    expect(parsed.queryParams).toMatchObject({ drill_region: ['TW-TPE'], region: ['CN-31'] });
     expect(parsed.filterQuery).toContain('= ANY({{drill_region}})');
   });
   test.each([
@@ -326,7 +348,8 @@ describe('Liekan breakdown drill filters', () => {
     );
     expect(parsed.filterQuery).toContain('or session.region');
     expect(parsed.filterQuery).toContain(` ${operator.includes('re') ? '~*' : 'ilike'} {{region}}`);
-    expect(parsed.filterQuery).toContain("then 'CN-71'");
+    expect(parsed.filterQuery).toContain("when 'CN-TPE' then 'TW-TPE'");
+    expect(parsed.filterQuery).not.toContain("'CN-71' when");
   });
 });
 

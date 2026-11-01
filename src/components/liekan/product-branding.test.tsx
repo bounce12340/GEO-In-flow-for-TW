@@ -2,6 +2,8 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LiekanLocaleContext } from '@/lib/liekan/i18n/client';
 import { ShareBranding } from '@/app/share/[slug]/[[...path]]/ShareBranding';
+import { LoginForm } from '@/app/login/LoginForm';
+import { liekanProduct, liekanPublisherLinks } from '@/lib/liekan/contracts/product';
 import { ProductFooter } from './ProductFooter';
 
 const share = vi.hoisted(() => ({
@@ -13,7 +15,16 @@ const share = vi.hoisted(() => ({
         logoUrl?: string;
       },
 }));
-vi.mock('@/components/hooks', () => ({ useShare: () => share }));
+vi.mock('@/components/hooks', () => ({
+  useShare: () => share,
+  useMessages: () => ({
+    t: (value: string) => value,
+    labels: { username: 'Username', password: 'Password', required: 'Required', login: 'Login' },
+    getErrorMessage: () => undefined,
+  }),
+  useUpdateQuery: () => ({ mutateAsync: vi.fn(), error: undefined }),
+}));
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }) }));
 vi.mock('./GeographyAttribution', () => ({
   GeographyAttribution: () => <span>IP Geolocation by DB-IP</span>,
 }));
@@ -30,7 +41,7 @@ it.each(['zh-CN', 'en-US'] as const)(
         <ProductFooter />
       </LiekanLocaleContext.Provider>,
     );
-    expect(screen.getByRole('link', { name: 'GEOInflow v1.2' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'GEOInflow TW v1.2' })).toHaveAttribute(
       'href',
       '/liekan/help?article=project-changelog',
     );
@@ -60,9 +71,9 @@ it.each(['zh-CN', 'en-US'] as const)(
   },
 );
 
-it('uses GEOInflow on an uncustomized share without an external branding destination', () => {
+it('uses GEOInflow TW on an uncustomized share without an external branding destination', () => {
   const { container } = render(<ShareBranding />);
-  expect(screen.getByText('GEOInflow')).toBeInTheDocument();
+  expect(screen.getByText('GEOInflow TW')).toBeInTheDocument();
   expect(container.querySelector('img')).toHaveAttribute('src', '/liekan/features/logo.svg');
   expect(container.querySelector('a')).toBeNull();
 });
@@ -80,7 +91,7 @@ it('preserves all custom share branding values', () => {
   );
   expect(container.querySelector('img')).toHaveAttribute('src', share.whiteLabel.logoUrl);
   expect(container.querySelector('a')).toHaveAttribute('rel', 'noopener noreferrer');
-  expect(screen.queryByText('GEOInflow')).toBeNull();
+  expect(screen.queryByText('GEOInflow TW')).toBeNull();
 });
 
 it('fills only absent custom brand values', () => {
@@ -89,4 +100,23 @@ it('fills only absent custom brand values', () => {
   expect(screen.getByText('客户统计')).toBeInTheDocument();
   expect(container.querySelector('img')).toHaveAttribute('src', '/liekan/features/logo.svg');
   expect(container.querySelector('a')).toBeNull();
+});
+
+it('shows GEOInflow TW as the login heading and keeps identifiers and publisher links', () => {
+  render(
+    <LiekanLocaleContext.Provider value="zh-TW">
+      <LoginForm />
+      <ProductFooter />
+    </LiekanLocaleContext.Provider>,
+  );
+  expect(screen.getByRole('heading', { name: 'GEOInflow TW' })).toBeInTheDocument();
+  expect(liekanProduct.name).toBe('GEOInflow');
+  expect(liekanProduct.displayName).toBe('GEOInflow');
+  expect(liekanPublisherLinks.map(({ label, href }) => [label, href])).toEqual([
+    ['猎看科技', 'https://www.liekan.com/?GEOInflow'],
+    ['北京日报社智源GEO', 'https://geo.takefoto.cn/?GEOInflow'],
+  ]);
+  for (const { label, href } of liekanPublisherLinks) {
+    expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', href);
+  }
 });

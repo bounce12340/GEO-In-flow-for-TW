@@ -4,6 +4,7 @@ import { HELP_REVIEWED_AT, type HelpArticle } from '../help/types';
 export const liekanProduct = {
   name: 'GEOInflow',
   displayName: 'GEOInflow',
+  title: 'GEOInflow TW',
   version,
   displayVersion: version.replace(/\.0$/, ''),
   caption: 'GEO STATS',

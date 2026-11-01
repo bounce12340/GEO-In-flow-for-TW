@@ -42,7 +42,7 @@ async function relationalQuery(
       sum(case when website_event.event_type = ${EVENT_TYPE.pageView} then 1 else 0 end) as "pageviews",
       count(distinct website_event.session_id) as "visitors",
       count(distinct website_event.visit_id) as "visits",
-      count(distinct ${getPostgresCountrySQL('session.country')}) as "countries",
+      count(distinct ${getPostgresCountrySQL('session.country', 'session.region')}) as "countries",
       sum(case when website_event.event_type = ${EVENT_TYPE.customEvent} then 1 else 0 end) as "events"
     from website_event
     ${cohortQuery}
@@ -73,7 +73,7 @@ async function clickhouseQuery(
       sumIf(1, event_type = ${EVENT_TYPE.pageView}) as "pageviews",
       uniq(session_id) as "visitors",
       uniq(visit_id) as "visits",
-      uniq(${getClickHouseCountrySQL('country')}) as "countries",
+      uniq(${getClickHouseCountrySQL('country', 'region')}) as "countries",
       sumIf(1, event_type = ${EVENT_TYPE.customEvent}) as "events"
     from website_event
     ${cohortQuery}
@@ -88,7 +88,7 @@ async function clickhouseQuery(
       sum(views) as "pageviews",
       uniq(session_id) as "visitors",
       uniq(visit_id) as "visits",
-      uniq(${getClickHouseCountrySQL('country')}) as "countries",
+      uniq(${getClickHouseCountrySQL('country', 'region')}) as "countries",
       sum(length(event_name)) as "events"
     from website_event_stats_hourly website_event
     ${cohortQuery}

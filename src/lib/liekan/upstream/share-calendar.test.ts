@@ -29,9 +29,9 @@ it('captures the saved publisher timezone and Today independently of the submitt
 it.each([
   ['absent', []],
   ['invalid', [{ timezone: 'invalid' }]],
-] as const)('uses the China default for an %s saved preference', async (_state, rows) => {
+] as const)('uses the Taipei default for an %s saved preference', async (_state, rows) => {
   mocks.query.mockResolvedValue(rows);
-  expect(await captureShareCalendar(auth)).toEqual({ timezone: 'Asia/Shanghai', range: '0day' });
+  expect(await captureShareCalendar(auth)).toEqual({ timezone: 'Asia/Taipei', range: '0day' });
 });
 
 it('retains explicitly submitted dates while capturing the publisher timezone', async () => {

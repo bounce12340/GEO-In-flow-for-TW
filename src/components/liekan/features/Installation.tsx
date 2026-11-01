@@ -216,7 +216,7 @@ export function InstallationEntry({ site, browser }: { site: FeatureEntity; brow
                         i18n.system(
                           dateLabel(
                             status.progress.completedAt,
-                            c.range.timezone || 'Asia/Shanghai',
+                            c.range.timezone || 'Asia/Taipei',
                           ),
                         ),
                       ])
@@ -326,7 +326,7 @@ export function Installation({
       : parsedMethod.success
         ? parsedMethod.data
         : status?.progress.method || 'cloudflare';
-  const timezone = c.range.timezone || 'Asia/Shanghai';
+  const timezone = c.range.timezone || 'Asia/Taipei';
   const href = (step: InstallationStep, chosen?: LogMethod) =>
     c.href('website-settings', installationParams(site.id, step, chosen));
   const navigate = (step: InstallationStep, chosen?: LogMethod) =>

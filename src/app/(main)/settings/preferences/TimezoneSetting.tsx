@@ -17,7 +17,7 @@ export function TimezoneSetting() {
   const preferences = useAccountPreferences();
   const [country, setCountry] = useState(preferences?.countryCode || 'CN');
   const [timezone, setTimezone] = useState(
-    accountTimezoneForCountry(country, preferences?.timezone || 'Asia/Shanghai') || '',
+    accountTimezoneForCountry(country, preferences?.timezone || 'Asia/Taipei') || '',
   );
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -67,7 +67,7 @@ export function TimezoneSetting() {
       <Button isDisabled={busy || !timezone} onPress={() => save(country, timezone)}>
         {i18n.text('保存')}
       </Button>
-      <Button isDisabled={busy} onPress={() => save('CN', 'Asia/Shanghai')}>
+      <Button isDisabled={busy} onPress={() => save('CN', 'Asia/Taipei')}>
         {i18n.text('重置')}
       </Button>
       {error && <span role="alert">{error}</span>}

@@ -187,7 +187,7 @@ function SiteConversation({
   const i18n = useLiekanI18n();
   const c = useFeature(),
     client = useQueryClient(),
-    timezone = c.range.timezone || 'Asia/Shanghai';
+    timezone = c.range.timezone || 'Asia/Taipei';
   const routeScope = c.query.aiSite === site.id;
   const routeConversation =
     routeScope && uuid.test(c.query.aiConversation || '') ? c.query.aiConversation : '';

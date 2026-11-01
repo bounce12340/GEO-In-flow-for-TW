@@ -1678,6 +1678,7 @@
   },
   "productBranding": {
     "name": "GEOInflow",
+    "title": "GEOInflow TW",
     "version": "v1.2",
     "buildVersion": "1.2.0",
     "caption": "GEO STATS",

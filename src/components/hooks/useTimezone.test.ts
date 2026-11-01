@@ -31,9 +31,9 @@ it('pins the public share timezone and leaves account settings unchanged', () =>
   expect(save).not.toHaveBeenCalled();
 });
 
-it('uses Shanghai while an old or pending public share has no saved timezone', () => {
+it('uses Taipei while an old or pending public share has no saved timezone', () => {
   setTestUrl('/share/old?legacy=1');
-  expect(renderHook(() => useTimezone()).result.current.timezone).toBe('Asia/Shanghai');
+  expect(renderHook(() => useTimezone()).result.current.timezone).toBe('Asia/Taipei');
 });
 
 it('advances a public Today preset even when the viewer saved a custom private range', async () => {

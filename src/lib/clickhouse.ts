@@ -18,6 +18,7 @@ import {
   getRegionFilterValues,
   getClickHouseRegionSQL,
   getClickHouseCountrySQL,
+  getTaiwanRegionFilterSQL,
 } from './country';
 import { filtersObjectToArray } from './params';
 import type { Operator, PropertyFilter, QueryFilters, QueryOptions } from './types';
@@ -161,11 +162,28 @@ function mapFilter(
       ? `(${comparison(column)} ${join} ${comparison(`coalesce(${rawGeography}, ${column})`)})`
       : comparison(column);
 
+  // The former Taiwan province value also selects Taiwan records without a county.
+  const taiwanRegion = rawGeography?.endsWith('region')
+    ? getTaiwanRegionFilterSQL(
+        rawGeography.replace(/region$/, 'country'),
+        rawGeography,
+        code => `has({${param}:Array(${type})}, ${code})`,
+      )
+    : null;
+
+  // Country equality uses the normalized code only, so CN does not select legacy Taiwan rows.
+  const equality = (comparison: (field: string) => string, join: 'or' | 'and') =>
+    rawGeography?.endsWith('country') ? comparison(column) : searchGeography(comparison, join);
+
   switch (operator) {
-    case OPERATORS.equals:
-      return searchGeography(field => `${field} IN {${param}:Array(${type})}`, 'or');
-    case OPERATORS.notEquals:
-      return searchGeography(field => `${field} NOT IN {${param}:Array(${type})}`, 'and');
+    case OPERATORS.equals: {
+      const clause = equality(field => `${field} IN {${param}:Array(${type})}`, 'or');
+      return taiwanRegion ? `(${clause} or ${taiwanRegion})` : clause;
+    }
+    case OPERATORS.notEquals: {
+      const clause = equality(field => `${field} NOT IN {${param}:Array(${type})}`, 'and');
+      return taiwanRegion ? `(${clause} and not ${taiwanRegion})` : clause;
+    }
     case OPERATORS.contains:
       return searchGeography(field => `positionCaseInsensitive(${field}, ${value}) > 0`, 'or');
     case OPERATORS.doesNotContain:
@@ -194,7 +212,7 @@ function getFilterQuery(filters: Record<string, any>, options: QueryOptions = {}
       let rawGeography: string | undefined;
       if (column === 'country' || column.endsWith('.country')) {
         rawGeography = column === 'country' ? 'website_event.country' : column;
-        column = getClickHouseCountrySQL(rawGeography);
+        column = getClickHouseCountrySQL(rawGeography, rawGeography.replace(/country$/, 'region'));
       }
       if (column === 'region' || column.endsWith('.region')) {
         rawGeography = column === 'region' ? 'website_event.region' : column;

@@ -1,13 +1,30 @@
-export const liekanLocales = ['zh-CN', 'en-US'] as const;
+export const liekanLocales = ['zh-TW', 'zh-CN', 'en-US'] as const;
 export type LiekanLocale = (typeof liekanLocales)[number];
 export const localeCookie = 'liekan.locale';
+/** GEOInflow TW default when neither the browser nor the deployment states a preference. */
+export const fallbackLiekanLocale: LiekanLocale = 'zh-TW';
 
 export function isLiekanLocale(value: unknown): value is LiekanLocale {
-  return value === 'zh-CN' || value === 'en-US';
+  return value === 'zh-TW' || value === 'zh-CN' || value === 'en-US';
 }
 
+/** Chinese locales share source-text layout rules (no inter-word spaces, full-width punctuation). */
+export const isChineseLocale = (locale: LiekanLocale) => locale !== 'en-US';
+
 export function defaultLiekanLocale(value?: string): LiekanLocale {
-  return value?.toLowerCase().startsWith('en') ? 'en-US' : 'zh-CN';
+  const configured = value?.trim().toLowerCase();
+  if (configured?.startsWith('en')) return 'en-US';
+  if (configured === 'zh-cn' || configured === 'zh-hans' || configured === 'zh-hans-cn')
+    return 'zh-CN';
+  return fallbackLiekanLocale;
+}
+
+/**
+ * Persisted server records (rollups, snapshots, repair jobs) only accept the two original
+ * locales. Traditional Chinese shares the Simplified source identity and is converted at render.
+ */
+export function storageLiekanLocale(locale: LiekanLocale): 'zh-CN' | 'en-US' {
+  return locale === 'en-US' ? 'en-US' : 'zh-CN';
 }
 
 export function readLocaleCookie(cookies: string): LiekanLocale | undefined {

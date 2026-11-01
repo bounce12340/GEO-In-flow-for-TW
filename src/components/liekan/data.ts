@@ -371,7 +371,7 @@ export function formatCellValue(
       minute: '2-digit',
       second: field === 'time' ? '2-digit' : undefined,
       hour12: false,
-      timeZone: 'Asia/Shanghai',
+      timeZone: 'Asia/Taipei',
     }).format(new Date(value));
   return formatValue(value, locale);
 }

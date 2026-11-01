@@ -3980,7 +3980,7 @@ export function ShareFeatureView({
         <div className="public-brand">
           <img src={`${process.env.basePath || ''}/liekan/features/logo.svg`} alt="" />
           <div>
-            <strong>{liekanProduct.name}</strong>
+            <strong>{liekanProduct.title}</strong>
             <small style={{ display: 'block' }}>
               {authorizedShare?.name || i18n.text('公开分享')}
               {i18n.fragment(' · 只读分享', true, false)}

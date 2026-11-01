@@ -207,7 +207,7 @@ try {
     const version = JSON.parse(fs.readFileSync('package.json', 'utf8')).version;
     assert.equal(
       await footer
-        .getByRole('link', { name: 'GEOInflow v' + version.replace(/\.0$/, '') })
+        .getByRole('link', { name: 'GEOInflow TW v' + version.replace(/\.0$/, '') })
         .getAttribute('href'),
       '/liekan/help?article=project-changelog',
     );

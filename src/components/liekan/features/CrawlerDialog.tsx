@@ -16,6 +16,7 @@ import { downloadFile } from '../data';
 import { pageLink } from '../PageLink';
 import { Badge, Button, Definition, LiekanDialog, Notice, Select, Table, Tabs } from './ui';
 import { CrawlerPoliciesPanel } from './CrawlerPoliciesPanel';
+import { CrawlPurposePanel } from './CrawlPurposePanel';
 
 const labels = {
   training: 'AI 训练',
@@ -128,7 +129,7 @@ export function CrawlerDialog({
         endAt - 90 * 86400000,
       ),
       endAt,
-      timezone: range?.timezone || 'Asia/Shanghai',
+      timezone: range?.timezone || 'Asia/Taipei',
       crawlerIdentityScope: scope,
     };
     withClientFreshness(
@@ -239,6 +240,17 @@ export function CrawlerDialog({
       abort.abort();
     };
   }, [tab, websiteId]);
+  useEffect(() => {
+    // Purpose analysis reuses robots.txt from the latest public check when one was stored.
+    if (tab !== 'purpose') return;
+    const abort = new AbortController();
+    featureRequest<any[]>('GET', `${base}/crawler-checks`, undefined, abort.signal)
+      .then(history => {
+        if (!abort.signal.aborted) setChecks(history);
+      })
+      .catch(() => {});
+    return () => abort.abort();
+  }, [tab, websiteId]);
   const follow = useTaskPolling(
     `${websiteId}:${followingCheck}`,
     tab === 'checks' &&
@@ -305,6 +317,7 @@ export function CrawlerDialog({
         onChange={setTab}
         items={[
           ['detail', i18n.text('蜘蛛详情')],
+          ['purpose', i18n.text('抓取目的')],
           ['evidence', i18n.text('身份与响应')],
           ['performance', i18n.text('资源与性能')],
           ['outcomes', i18n.text('业务效果')],
@@ -353,6 +366,7 @@ export function CrawlerDialog({
               options={[{ value: '', label: i18n.text('全部') }, ...botOptions]}
             />
           )}
+          {tab === 'purpose' && <CrawlPurposePanel data={data} checks={checks} />}
           {tab === 'evidence' && (
             <>
               <Select

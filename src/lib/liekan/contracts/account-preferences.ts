@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import catalog from './country-timezones.json' with { type: 'json' };
 
-export const ACCOUNT_DEFAULT_TIMEZONE = 'Asia/Shanghai';
+export const ACCOUNT_DEFAULT_TIMEZONE = 'Asia/Taipei';
 export const ACCOUNT_DEFAULT_RANGE = '0day';
 export const accountCountryCodes: string[] = Object.keys(catalog.countries);
 export const accountTimezoneCatalogVersion = catalog.version;
@@ -117,7 +117,7 @@ export type InitializeAccountPreferences = z.infer<typeof initializeAccountPrefe
 export type SaveAccountPreferences = z.infer<typeof saveAccountPreferencesSchema>;
 
 export const defaultAccountPreferences: AccountPreferences = {
-  countryCode: 'CN',
+  countryCode: 'TW',
   timezone: ACCOUNT_DEFAULT_TIMEZONE,
   range: ACCOUNT_DEFAULT_RANGE,
   configured: false,

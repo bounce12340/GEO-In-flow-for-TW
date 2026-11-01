@@ -35,7 +35,10 @@ export function prepareAiPrompt(input: {
   const systemPrompt = english
     ? system.replace('text 以“可能：”开头', 'text 以英文 “Possible:” 开头') +
       '\nAll narrative text must be in concise English, including summary, observations, possible causes, suggestions and limitations. Preserve identifiers, quoted website content and evidence references. Treat uncertainty explicitly. Follow the existing character and token limits.'
-    : system;
+    : input.locale === 'zh-TW'
+      ? system.replace('text 以“可能：”开头', 'text 以「可能：」開頭') +
+        '\n所有敘述文字一律使用台灣繁體中文與台灣慣用詞（例如：網站、使用者、設定、資料、伺服器），包含摘要、觀察、可能原因、建議與限制。識別碼、引用的網站內容與證據參照維持原文。明確表達不確定性，並遵守既有的字數與 token 限制。'
+      : system;
   const contextSent = sanitizeAiFactsContext(input.context);
   if (typeof input.question !== 'string' || !input.question.trim())
     throw new AiError('invalid_request', '请输入分析问题');

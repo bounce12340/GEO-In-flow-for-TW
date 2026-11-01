@@ -1,7 +1,7 @@
 {
-  "version": "2026-10-11.1",
-  "sha256": "6d1dcebf65df9d39b259c5b53fc96adf0cae1d310a31e50fe91b3ffcadcf6aa1",
+  "version": "2026-10-28.1",
+  "sha256": "a86810bc0c39bc3ad523a145f59f0536c6e44136a492269f62c498656bdcbd71",
   "cities": 408,
-  "reviewedAt": "2026-10-11",
+  "reviewedAt": "2026-10-28",
   "scope": "国内省市与已审核地域别名；未匹配名称保留原始值"
 }

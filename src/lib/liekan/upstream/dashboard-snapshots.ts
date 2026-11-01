@@ -741,7 +741,7 @@ export async function seedDashboardSnapshots(
     ];
     const scopes = [
       ...new Map(
-        [{ timezone: 'Asia/Shanghai', locale: 'zh-CN' as const }, ...remembered]
+        [{ timezone: 'Asia/Taipei', locale: 'zh-CN' as const }, ...remembered]
           .filter(x => x.timezone)
           .map(x => [`${x.timezone}:${x.locale}`, x]),
       ).values(),

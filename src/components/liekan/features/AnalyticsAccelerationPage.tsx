@@ -7,6 +7,7 @@ import type {
   AnalysisWebsiteList,
 } from '@/lib/liekan/contracts/analysis-acceleration';
 import { useLiekanI18n } from '@/lib/liekan/i18n/client';
+import { storageLiekanLocale } from '@/lib/liekan/i18n/locale';
 import { useManualQuery, useManualRefresh } from '@/lib/liekan/contracts/manual-refresh';
 import { useFeature } from './context';
 import { Body, Button, Definition, Field, LinkButton, Notice, Panel, Select, Table } from './ui';
@@ -269,7 +270,7 @@ export function AnalyticsAccelerationPage() {
                       requestId: crypto.randomUUID(),
                       expectedRevision: detail.revision,
                       timezone: c.range.timezone,
-                      locale: i18n.locale,
+                      locale: storageLiekanLocale(i18n.locale),
                       ...(preset === 'custom'
                         ? {
                             startAt: +fromZonedTime(`${start}T00:00:00`, c.range.timezone),

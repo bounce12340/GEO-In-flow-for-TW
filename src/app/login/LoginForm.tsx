@@ -52,7 +52,7 @@ export function LoginForm() {
           }}
         />
       </Icon>
-      <Heading>{liekanProduct.name}</Heading>
+      <Heading>{liekanProduct.title}</Heading>
       <Form
         onSubmit={handleSubmit}
         error={getErrorMessage(error)}

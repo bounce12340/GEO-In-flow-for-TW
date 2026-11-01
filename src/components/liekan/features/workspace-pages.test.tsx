@@ -1462,7 +1462,7 @@ describe('public share restrictions and password lifecycle', () => {
     await waitFor(() => {
       const calls = mocks.request.mock.calls.filter(call => call[1].includes('/shared-report'));
       expect(calls).toHaveLength(2);
-      expect(calls[1][2]).toMatchObject({ timezone: 'Asia/Shanghai', chartPeriod: '7d' });
+      expect(calls[1][2]).toMatchObject({ timezone: 'Asia/Taipei', chartPeriod: '7d' });
       expect(calls[1][2].endAt - calls[1][2].startAt).toBe(7 * 86400000 - 1);
       expect(calls.every(call => call[4] === 'report-token' && call[5] === '')).toBe(true);
     });

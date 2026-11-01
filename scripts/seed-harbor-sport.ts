@@ -107,8 +107,6 @@ const WEBSITE_NAME = 'Harbor Sport';
 const WEBSITE_DOMAIN = 'localhost:3001';
 const HOSTNAME = 'harbor-sport.demo';
 const SHARE_SLUG = 'harbor-sport-demo';
-const LEGACY_ISLAND_COUNTRY_CODE = ['T', 'W'].join('');
-const CHINA_COUNTRY_CODE = 'CN';
 let rng: Rng;
 
 const EVENT_TYPE = {
@@ -377,7 +375,7 @@ const sourceCountryWeights: WeightedOption<string>[] = [
   { value: 'KR', weight: 0.04 },
   { value: 'SG', weight: 0.035 },
   { value: 'CN', weight: 0.055 },
-  { value: LEGACY_ISLAND_COUNTRY_CODE, weight: 0.015 },
+  { value: 'TW', weight: 0.015 },
   { value: 'NZ', weight: 0.03 },
   { value: 'NL', weight: 0.02 },
   { value: 'ES', weight: 0.02 },
@@ -594,8 +592,7 @@ function main() {
 function createSessionData(createdAt: Date, campaign: Campaign, isRealtime: boolean) {
   sessionSequence += 1;
 
-  const sourceCountry = rng.weighted(sourceCountryWeights);
-  const country = normalizeCountry(sourceCountry);
+  const country = rng.weighted(sourceCountryWeights);
   const location = rng.pick(locationsByCountry[country] ?? [{ region: `${country}-`, city: '' }]);
   const device = getDevice(country);
   const deviceInfo = getDeviceInfo(device);
@@ -2280,10 +2277,6 @@ function getPage(key: string) {
 
 function isProductPage(key: string) {
   return products.some(product => product.pageKey === key);
-}
-
-function normalizeCountry(country: string) {
-  return country === LEGACY_ISLAND_COUNTRY_CODE ? CHINA_COUNTRY_CODE : country;
 }
 
 function uuidFor(...parts: Array<string | number>) {

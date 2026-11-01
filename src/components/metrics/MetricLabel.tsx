@@ -115,7 +115,7 @@ function RegionMetricLabel({ data }: Pick<MetricLabelProps, 'data'>) {
   const { locale } = useLocale();
   const { getRegionName } = useRegionNames(locale);
   const { label, country: originalCountry } = data;
-  const country = normalizeCountryCode(originalCountry);
+  const country = normalizeCountryCode(originalCountry, label);
 
   return (
     <FilterLink

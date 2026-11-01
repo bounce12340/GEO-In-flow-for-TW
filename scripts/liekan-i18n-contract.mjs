@@ -148,6 +148,30 @@ export function assertLanguagePair(chinese, english, directory = 'catalog') {
   }
 }
 
+// Simplified-only characters that must not survive in the Taiwan catalog outside preserved names.
+const simplifiedOnly = /[们这网设据数为务时发实点开关内显动应让说请没对载传选种问认证码录统专业车马长门见页风飞览码输击复杂]/;
+const preservedTraditional = ['北京日报社智源GEO', '猎看官网（示例数据）', '猎看科技', '猎看'];
+export function assertTraditionalPair(chinese, traditional, directory = 'catalog') {
+  if (JSON.stringify(Object.keys(chinese)) !== JSON.stringify(Object.keys(traditional)))
+    throw new Error(`Traditional catalog key/order mismatch: ${directory}`);
+  const tokens = text => text.match(/\{[^{}]+\}/g) || [];
+  for (const [key, source] of Object.entries(chinese)) {
+    const value = traditional[key];
+    if (typeof value !== 'string' || !value.trim())
+      throw new Error(`Empty Traditional Chinese message: ${key}`);
+    if (JSON.stringify(tokens(source)) !== JSON.stringify(tokens(value)))
+      throw new Error(`Traditional message placeholders differ: ${key}`);
+    if ((protectedLiterals.has(source) || preservedNames.has(source)) && value !== source)
+      throw new Error(`Protected literal changed in Traditional catalog: ${key}`);
+    const display =
+      protectedLiterals.has(source) || preservedNames.has(source)
+        ? ''
+        : preservedTraditional.reduce((text, name) => text.split(name).join(''), value);
+    if (simplifiedOnly.test(display))
+      throw new Error(`Simplified character in Traditional message: ${key}`);
+  }
+}
+
 /** Covers explicitly owned TS metadata without executing modules or inspecting raw values. */
 export function assertOwnedSourceMetadata(source, variables, sources, file = 'metadata.ts') {
   const ast = ts.createSourceFile(
